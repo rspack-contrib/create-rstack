@@ -21,6 +21,9 @@ npm add create-rstack -D
 
 See: [create-rsbuild](https://github.com/web-infra-dev/rsbuild/tree/main/packages/create-rsbuild).
 
+![image](https://github.com/user-attachments/assets/2dda3501-720c-4151-bd3e-5e038dca9e68)
+
+
 ## License
 
 [MIT](./LICENSE).
