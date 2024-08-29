@@ -1,0 +1,56 @@
+{
+  "name": "create-rstack",
+  "version": "1.0.1-rc.0",
+  "description": "Create a new Rstack project",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rspack-contrib/create-rstack"
+  },
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "template-*",
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "biome check .",
+    "lint:write": "biome check . --write",
+    "prepare": "simple-git-hooks && npm run build",
+    "test": "playwright test"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx nano-staged"
+  },
+  "nano-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@clack/prompts": "^0.7.0",
+    "@types/minimist": "^1.2.5",
+    "@types/node": "18.x",
+    "deepmerge": "^4.3.1",
+    "minimist": "^1.2.8",
+    "rslog": "^1.2.2",
+    "simple-git-hooks": "^2.11.1",
+    "tsup": "^8.2.3",
+    "typescript": "^5.5.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "registry": "https://registry.npmjs.org/"
+  }
+}
