@@ -48,6 +48,7 @@
     "simple-git-hooks": "^2.11.1",
     "typescript": "^5.5.2"
   },
+  "packageManager": "pnpm@9.0.6",
   "publishConfig": {
     "access": "public",
     "provenance": true,
