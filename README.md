@@ -1,47 +1,20 @@
-# rsbuild-plugin-example
+# create-rstack
 
-rsbuild-plugin-example is a Rsbuild plugin to do something.
+A shared package for create-rspack, create-rsbuild, create-rspress and create-rslib.
+
+> This package should only be used in Rstack projects.
 
 <p>
-  <a href="https://npmjs.com/package/rsbuild-plugin-example">
-   <img src="https://img.shields.io/npm/v/rsbuild-plugin-example?style=flat-square&colorA=564341&colorB=EDED91" alt="npm version" />
+  <a href="https://npmjs.com/package/create-rstack">
+   <img src="https://img.shields.io/npm/v/create-rstack?style=flat-square&colorA=564341&colorB=EDED91" alt="npm version" />
   </a>
   <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square&colorA=564341&colorB=EDED91" alt="license" />
 </p>
 
-## Usage
-
-Install:
+## Install
 
 ```bash
-npm add rsbuild-plugin-example -D
-```
-
-Add plugin to your `rsbuild.config.ts`:
-
-```ts
-// rsbuild.config.ts
-import { pluginExample } from "rsbuild-plugin-example";
-
-export default {
-  plugins: [pluginExample()],
-};
-```
-
-## Options
-
-### foo
-
-Some description.
-
-- Type: `string`
-- Default: `undefined`
-- Example:
-
-```js
-pluginExample({
-  foo: "bar",
-});
+npm add create-rstack -D
 ```
 
 ## License
