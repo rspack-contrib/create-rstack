@@ -17,6 +17,10 @@ A shared package for create-rspack, create-rsbuild, create-rspress and create-rs
 npm add create-rstack -D
 ```
 
+## Example
+
+See: [create-rsbuild](https://github.com/web-infra-dev/rsbuild/tree/main/packages/create-rsbuild).
+
 ## License
 
 [MIT](./LICENSE).
