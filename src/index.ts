@@ -160,7 +160,9 @@ export async function create({
   const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent);
   const pkgManager = pkgInfo ? pkgInfo.name : 'npm';
   const packageJsonPath = path.join(root, 'package.json');
-  const { version } = require(packageJsonPath);
+  const { version } = JSON.parse(
+    await fs.promises.readFile(packageJsonPath, 'utf-8'),
+  );
 
   const projectName =
     argv.dir ??
@@ -231,7 +233,7 @@ export async function create({
         continue;
       }
 
-      let subFolder = path.join(toolFolder, eslintTemplateName);
+      const subFolder = path.join(toolFolder, eslintTemplateName);
       copyFolder({
         from: subFolder,
         to: distFolder,
