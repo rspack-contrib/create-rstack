@@ -135,11 +135,13 @@ export async function create({
   name,
   root,
   templates,
+  skipFiles,
   getTemplateName,
   mapESLintTemplate,
 }: {
   name: string;
   root: string;
+  skipFiles?: string[];
   templates: string[];
   getTemplateName: (argv: Argv) => Promise<string>;
   mapESLintTemplate: (templateName: string) => ESLintTemplateName | null;
@@ -214,12 +216,14 @@ export async function create({
     from: commonFolder,
     to: distFolder,
     version,
+    skipFiles,
   });
   copyFolder({
     from: srcFolder,
     to: distFolder,
     version,
     packageName,
+    skipFiles,
   });
 
   const packageRoot = path.resolve(__dirname, '..');
@@ -238,6 +242,7 @@ export async function create({
         from: subFolder,
         to: distFolder,
         version,
+        skipFiles,
         isMergePackageJson: true,
       });
     } else {
@@ -245,6 +250,7 @@ export async function create({
         from: toolFolder,
         to: distFolder,
         version,
+        skipFiles,
         isMergePackageJson: true,
       });
     }
@@ -301,24 +307,26 @@ function copyFolder({
   version,
   packageName,
   isMergePackageJson,
+  skipFiles = [],
 }: {
   from: string;
   to: string;
   version: string;
   packageName?: string;
   isMergePackageJson?: boolean;
+  skipFiles?: string[];
 }) {
   const renameFiles: Record<string, string> = {
     gitignore: '.gitignore',
   };
 
   // Skip local files
-  const skipFiles = ['node_modules', 'dist'];
+  const allSkipFiles = ['node_modules', 'dist', ...skipFiles];
 
   fs.mkdirSync(to, { recursive: true });
 
   for (const file of fs.readdirSync(from)) {
-    if (skipFiles.includes(file)) {
+    if (allSkipFiles.includes(file)) {
       continue;
     }
 
@@ -333,6 +341,7 @@ function copyFolder({
         from: srcFile,
         to: distFile,
         version,
+        skipFiles,
       });
     } else if (file === 'package.json') {
       const targetPackage = path.resolve(to, 'package.json');
