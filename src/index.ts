@@ -258,7 +258,7 @@ export async function create({
 
   const nextSteps = [
     `cd ${targetDir}`,
-    `${pkgManager} i`,
+    `${pkgManager} install`,
     `${pkgManager} run dev`,
   ];
 
