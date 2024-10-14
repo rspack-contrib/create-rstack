@@ -17,7 +17,9 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "template-*",
+    "template-biome",
+    "template-eslint",
+    "template-prettier",
     "dist"
   ],
   "scripts": {
