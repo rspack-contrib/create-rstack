@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   cancel,
   isCancel,
@@ -12,6 +14,9 @@ import {
 import deepmerge from 'deepmerge';
 import minimist from 'minimist';
 import { logger } from 'rslog';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export { select, multiselect, text };
 
