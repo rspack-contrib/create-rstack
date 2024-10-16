@@ -15,8 +15,8 @@ importers:
         specifier: ^0.7.0
         version: 0.7.0
       '@rslib/core':
-        specifier: 0.0.5
-        version: 0.0.5(typescript@5.6.3)
+        specifier: 0.0.12
+        version: 0.0.12(typescript@5.6.3)
       '@types/minimist':
         specifier: ^1.2.5
         version: 1.2.5
@@ -129,13 +129,13 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@rsbuild/core@1.0.1-rc.4':
-    resolution: {integrity: sha512-JlouV5M+azv9YP6hD11rHeUns8Yk9sQN9QmMCKhutG75j1TCEKmrL0O7UmE89+uKlJTnL5Pyzy29TLO5ncIRjg==}
+  '@rsbuild/core@1.0.14':
+    resolution: {integrity: sha512-00d0DzRUK2CncKK+dHGG8AZuiXzltVzt58BbTba2AKyLHIb2nwYW4ah33sNrDAbYzdz1kPNfsWrmQvY7z71LfA==}
     engines: {node: '>=16.7.0'}
     hasBin: true
 
-  '@rslib/core@0.0.5':
-    resolution: {integrity: sha512-tVI+tgVQiIxtFztOng5l+XoO1Yd1K21ef6k6x0lmGAUfinDPgKX2s9tn93c6/dsgmu2h9e1eXA9ekQMLrRzREQ==}
+  '@rslib/core@0.0.12':
+    resolution: {integrity: sha512-vlrrPAASi7D5jlGfndnJFyG3Q2R0m15oPBBJHNUKCMlDQRb83KM/pU1ihYWIxvfTgO6dK8RnGL8cUmVK4NyZkA==}
     engines: {node: '>=16.0.0'}
     hasBin: true
     peerDependencies:
@@ -263,8 +263,8 @@ packages:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
 
-  magic-string@0.30.11:
-    resolution: {integrity: sha512-+Wri9p0QHMy+545hKww7YAu5NyzF8iomPL/RQazugQ9+Ez4Ic3mERMd8ZTX5rfK944j+560ZJi8iAwgak1Ac7A==}
+  magic-string@0.30.12:
+    resolution: {integrity: sha512-Ea8I3sQMVXr8JhN4z+H/d8zwo+tYDgHE9+5G4Wnrwhs0gaK9fXTKx0Tw5Xwsd/bCPTTZNRAdpyzvoeORe9LYpw==}
 
   merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
@@ -294,8 +294,8 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  rsbuild-plugin-dts@0.0.5:
-    resolution: {integrity: sha512-YZvlc2LxmX+63DJd/HGlYyz3Pl6vBQxAWMax+Qk1gWUDZLRmOFZdo2OPmjW/xID9Jp0GeSdq95AzATH/7pAAyA==}
+  rsbuild-plugin-dts@0.0.12:
+    resolution: {integrity: sha512-MnU011hgc1vgBrD81e05ZTFOST2rIupGQfBLF+ibm+HnzcXUiC7eHFS34q9rx+59IgJcgxpdSCO2JUPNcpiYog==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       '@microsoft/api-extractor': ^7
@@ -414,20 +414,19 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@rsbuild/core@1.0.1-rc.4':
+  '@rsbuild/core@1.0.14':
     dependencies:
       '@rspack/core': 1.0.10(@swc/helpers@0.5.13)
       '@rspack/lite-tapable': 1.0.1
       '@swc/helpers': 0.5.13
-      caniuse-lite: 1.0.30001660
       core-js: 3.38.1
     optionalDependencies:
       fsevents: 2.3.3
 
-  '@rslib/core@0.0.5(typescript@5.6.3)':
+  '@rslib/core@0.0.12(typescript@5.6.3)':
     dependencies:
-      '@rsbuild/core': 1.0.1-rc.4
-      rsbuild-plugin-dts: 0.0.5(@rsbuild/core@1.0.1-rc.4)(typescript@5.6.3)
+      '@rsbuild/core': 1.0.14
+      rsbuild-plugin-dts: 0.0.12(@rsbuild/core@1.0.14)(typescript@5.6.3)
     optionalDependencies:
       typescript: 5.6.3
 
@@ -532,7 +531,7 @@ snapshots:
 
   is-number@7.0.0: {}
 
-  magic-string@0.30.11:
+  magic-string@0.30.12:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
 
@@ -555,11 +554,11 @@ snapshots:
 
   reusify@1.0.4: {}
 
-  rsbuild-plugin-dts@0.0.5(@rsbuild/core@1.0.1-rc.4)(typescript@5.6.3):
+  rsbuild-plugin-dts@0.0.12(@rsbuild/core@1.0.14)(typescript@5.6.3):
     dependencies:
-      '@rsbuild/core': 1.0.1-rc.4
+      '@rsbuild/core': 1.0.14
       fast-glob: 3.3.2
-      magic-string: 0.30.11
+      magic-string: 0.30.12
       picocolors: 1.1.0
     optionalDependencies:
       typescript: 5.6.3

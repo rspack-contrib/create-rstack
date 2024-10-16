@@ -7,6 +7,11 @@ export default defineConfig({
       dts: {
         bundle: false,
       },
+      shims: {
+        esm: {
+          require: true,
+        },
+      },
     },
   ],
   output: {
