@@ -283,7 +283,12 @@ function sortObjectKeys(obj: Record<string, unknown>) {
   return sortedObj;
 }
 
-function mergePackageJson(targetPackage: string, extraPackage: string) {
+/**
+ * Merge two package.json files and keep the order of keys.
+ * @param targetPackage Path to the base package.json file
+ * @param extraPackage Path to the extra package.json file to merge
+ */
+export function mergePackageJson(targetPackage: string, extraPackage: string) {
   if (!fs.existsSync(targetPackage)) {
     return;
   }
@@ -306,7 +311,16 @@ function mergePackageJson(targetPackage: string, extraPackage: string) {
   fs.writeFileSync(targetPackage, `${JSON.stringify(mergedJson, null, 2)}\n`);
 }
 
-function copyFolder({
+/**
+ * Copy files from one folder to another.
+ * @param from Source folder
+ * @param to Destination folder
+ * @param version Version to update in package.json
+ * @param packageName Name to update in package.json
+ * @param isMergePackageJson Merge package.json files
+ * @param skipFiles Files to skip
+ */
+export function copyFolder({
   from,
   to,
   version,
