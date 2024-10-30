@@ -315,8 +315,8 @@ export function mergePackageJson(targetPackage: string, extraPackage: string) {
  * Copy files from one folder to another.
  * @param from Source folder
  * @param to Destination folder
- * @param version Version to update in package.json
- * @param packageName Name to update in package.json
+ * @param version - Optional. The version to update in the package.json. If not provided, version will not be updated.
+ * @param name - Optional. The name to update in the package.json. If not provided, name will not be updated.
  * @param isMergePackageJson Merge package.json files
  * @param skipFiles Files to skip
  */
@@ -330,7 +330,7 @@ export function copyFolder({
 }: {
   from: string;
   to: string;
-  version: string;
+  version?: string;
   packageName?: string;
   isMergePackageJson?: boolean;
   skipFiles?: string[];
@@ -383,17 +383,25 @@ const isStableVersion = (version: string) => {
   );
 };
 
+/**
+ * Updates the package.json file at the specified path with the provided version and name.
+ *
+ * @param pkgJsonPath - The file path to the package.json file.
+ * @param version - Optional. The version to update in the package.json. If not provided, version will not be updated.
+ * @param name - Optional. The name to update in the package.json. If not provided, name will not be updated.
+ */
 const updatePackageJson = (
   pkgJsonPath: string,
-  version: string,
+  version?: string,
   name?: string,
 ) => {
   let content = fs.readFileSync(pkgJsonPath, 'utf-8');
 
-  // Lock the version if it is not stable
-  const targetVersion = isStableVersion(version) ? `^${version}` : version;
-
-  content = content.replace(/workspace:\*/g, targetVersion);
+  if (typeof version === 'string') {
+    // Lock the version if it is not stable
+    const targetVersion = isStableVersion(version) ? `^${version}` : version;
+    content = content.replace(/workspace:\*/g, targetVersion);
+  }
 
   const pkg = JSON.parse(content);
 
