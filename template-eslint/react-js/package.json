@@ -6,11 +6,11 @@
     "lint": "eslint ."
   },
   "devDependencies": {
-    "@eslint/compat": "^1.2.2",
-    "@eslint/js": "^9.13.0",
-    "eslint": "^9.13.0",
+    "@eslint/compat": "^1.2.3",
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
-    "globals": "^15.11.0"
+    "globals": "^15.12.0"
   }
 }
