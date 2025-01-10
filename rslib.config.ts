@@ -14,7 +14,4 @@ export default defineConfig({
       },
     },
   ],
-  output: {
-    target: 'node',
-  },
 });
