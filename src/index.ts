@@ -143,6 +143,7 @@ export async function create({
   skipFiles,
   getTemplateName,
   mapESLintTemplate,
+  version,
 }: {
   name: string;
   root: string;
@@ -150,6 +151,7 @@ export async function create({
   templates: string[];
   getTemplateName: (argv: Argv) => Promise<string>;
   mapESLintTemplate: (templateName: string) => ESLintTemplateName | null;
+  version?: Record<string, string> | string;
 }) {
   const argv = minimist<Argv>(process.argv.slice(2), {
     alias: { h: 'help', d: 'dir', t: 'template' },
@@ -167,9 +169,13 @@ export async function create({
   const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent);
   const pkgManager = pkgInfo ? pkgInfo.name : 'npm';
   const packageJsonPath = path.join(root, 'package.json');
-  const { version } = JSON.parse(
-    await fs.promises.readFile(packageJsonPath, 'utf-8'),
-  );
+
+  // No version provided, read from package.json
+  if (!version) {
+    version = JSON.parse(
+      await fs.promises.readFile(packageJsonPath, 'utf-8'),
+    ).version;
+  }
 
   const projectName =
     argv.dir ??
@@ -330,7 +336,7 @@ export function copyFolder({
 }: {
   from: string;
   to: string;
-  version?: string;
+  version?: string | Record<string, string>;
   packageName?: string;
   isMergePackageJson?: boolean;
   skipFiles?: string[];
@@ -392,7 +398,7 @@ const isStableVersion = (version: string) => {
  */
 const updatePackageJson = (
   pkgJsonPath: string,
-  version?: string,
+  version?: string | Record<string, string>,
   name?: string,
 ) => {
   let content = fs.readFileSync(pkgJsonPath, 'utf-8');
@@ -404,6 +410,17 @@ const updatePackageJson = (
   }
 
   const pkg = JSON.parse(content);
+
+  if (typeof version === 'object') {
+    for (const [name, ver] of Object.entries(version)) {
+      if (pkg.dependencies?.[name]) {
+        pkg.dependencies[name] = ver;
+      }
+      if (pkg.devDependencies?.[name]) {
+        pkg.devDependencies[name] = ver;
+      }
+    }
+  }
 
   if (name && name !== '.') {
     pkg.name = name;
