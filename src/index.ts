@@ -13,6 +13,7 @@ import {
 } from '@clack/prompts';
 import deepmerge from 'deepmerge';
 import minimist from 'minimist';
+import color from 'picocolors';
 import { logger } from 'rslog';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -268,14 +269,15 @@ export async function create({
   }
 
   const nextSteps = [
-    `cd ${targetDir}`,
-    `${pkgManager} install`,
-    `${pkgManager} run dev`,
+    `1. ${color.cyan(`cd ${targetDir}`)}`,
+    `2. ${color.cyan('git init')} ${color.dim('(optional)')}`,
+    `3. ${color.cyan(`${pkgManager} install`)}`,
+    `4. ${color.cyan(`${pkgManager} run dev`)}`,
   ];
 
-  note(nextSteps.join('\n'), 'Next steps');
+  note(nextSteps.map((step) => color.reset(step)).join('\n'), 'Next steps');
 
-  outro('Done.');
+  outro('All set, happy coding!');
 }
 
 function sortObjectKeys(obj: Record<string, unknown>) {

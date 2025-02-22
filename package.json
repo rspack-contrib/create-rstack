@@ -48,6 +48,7 @@
     "@types/node": "22.13.0",
     "deepmerge": "^4.3.1",
     "minimist": "^1.2.8",
+    "picocolors": "^1.1.1",
     "rslog": "^1.2.3",
     "simple-git-hooks": "^2.11.1",
     "typescript": "^5.7.3"
