@@ -18,6 +18,9 @@ import { logger } from 'rslog';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+// Fill up the string placeholders with the provided plain object.
+// `{a} - {b}` with `{a: 1, b: 2}` -> `1 - 2`.
+const FILL_UP_PLACEHOLDER = /\{\s*([^{}]+)\s*}/g;
 
 export { select, multiselect, text };
 
@@ -72,6 +75,58 @@ function pkgFromUserAgent(userAgent: string | undefined) {
 function isEmptyDir(path: string) {
   const files = fs.readdirSync(path);
   return files.length === 0 || (files.length === 1 && files[0] === '.git');
+}
+
+function fillUpStrPlaceholder(str: string, payload: Record<string, string>) {
+  return str.replace(
+    FILL_UP_PLACEHOLDER,
+    function replacer(_matchedStr, matchedPlaceholder) {
+      return payload[matchedPlaceholder];
+    },
+  );
+}
+
+function deepFillUpJsonValuePlaceholder(
+  jsonObj: object,
+  payload: Record<string, string>,
+) {
+  for (const key in jsonObj) {
+    if (!Object.prototype.hasOwnProperty.call(jsonObj, key)) {
+      continue;
+    }
+
+    // @ts-expect-error
+    const value = jsonObj[key];
+    if (typeof value === 'object' && value != null) {
+      deepFillUpJsonValuePlaceholder(value, payload);
+      continue;
+    }
+
+    if (typeof value !== 'string') {
+      continue;
+    }
+
+    // @ts-expect-error
+    jsonObj[key] = fillUpStrPlaceholder(value, payload);
+  }
+
+  return jsonObj;
+}
+
+async function deepFillUpJsonFilePlaceholder(
+  jsonFilePath: string,
+  payload: Record<string, string>,
+) {
+  const biomeJson = JSON.parse(
+    await fs.promises.readFile(jsonFilePath, 'utf-8'),
+  );
+  deepFillUpJsonValuePlaceholder(biomeJson, payload);
+
+  await fs.promises.writeFile(
+    jsonFilePath,
+    `${JSON.stringify(biomeJson, null, 2)}\n`,
+    'utf-8',
+  );
 }
 
 export type Argv = {
@@ -257,13 +312,35 @@ export async function create({
         skipFiles,
         isMergePackageJson: true,
       });
-    } else {
-      copyFolder({
-        from: toolFolder,
-        to: distFolder,
-        version,
-        skipFiles,
-        isMergePackageJson: true,
+
+      continue;
+    }
+
+    copyFolder({
+      from: toolFolder,
+      to: distFolder,
+      version,
+      skipFiles,
+      isMergePackageJson: true,
+    });
+
+    if (tool === 'biome') {
+      let biomeVersion: string =
+        JSON.parse(
+          await fs.promises.readFile(
+            path.join(distFolder, 'package.json'),
+            'utf-8',
+          ),
+        ).devDependencies?.['@biomejs/biome'] ?? '1.9.4';
+
+      biomeVersion = biomeVersion
+        .split('.')
+        .slice(0, 3)
+        .map((s) => s.replace(/\W/g, ''))
+        .join('.');
+
+      await deepFillUpJsonFilePlaceholder(path.join(distFolder, 'biome.json'), {
+        version: biomeVersion,
       });
     }
   }
