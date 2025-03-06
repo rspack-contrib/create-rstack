@@ -257,14 +257,45 @@ export async function create({
         skipFiles,
         isMergePackageJson: true,
       });
-    } else {
-      copyFolder({
-        from: toolFolder,
-        to: distFolder,
-        version,
-        skipFiles,
-        isMergePackageJson: true,
-      });
+
+      continue;
+    }
+
+    copyFolder({
+      from: toolFolder,
+      to: distFolder,
+      version,
+      skipFiles,
+      isMergePackageJson: true,
+    });
+
+    if (tool === 'biome') {
+      let biomeVersion: string =
+        JSON.parse(
+          await fs.promises.readFile(
+            path.join(distFolder, 'package.json'),
+            'utf-8',
+          ),
+        ).devDependencies?.['@biomejs/biome'] ?? '1.9.4';
+
+      biomeVersion = biomeVersion
+        .split('.')
+        .slice(0, 3)
+        .map((s) => s.replace(/\W/g, ''))
+        .join('.');
+
+      const biomeJsonPath = path.join(distFolder, 'biome.json');
+      const biomeJson = JSON.parse(
+        await fs.promises.readFile(biomeJsonPath, 'utf-8'),
+      );
+
+      biomeJson.$schema = biomeJson.$schema.replace('{version}', biomeVersion);
+
+      await fs.promises.writeFile(
+        biomeJsonPath,
+        `${JSON.stringify(biomeJson, null, 2)}\n`,
+        'utf-8',
+      );
     }
   }
 
