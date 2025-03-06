@@ -137,6 +137,12 @@ export type ESLintTemplateName =
   | 'svelte-js'
   | 'svelte-ts';
 
+const readJSON = async (path: string) =>
+  JSON.parse(await fs.promises.readFile(path, 'utf-8'));
+
+const readPackageJson = async (filePath: string) =>
+  readJSON(path.join(filePath, 'package.json'));
+
 export async function create({
   name,
   root,
@@ -169,13 +175,10 @@ export async function create({
   const cwd = process.cwd();
   const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent);
   const pkgManager = pkgInfo ? pkgInfo.name : 'npm';
-  const packageJsonPath = path.join(root, 'package.json');
 
   // No version provided, read from package.json
   if (!version) {
-    version = JSON.parse(
-      await fs.promises.readFile(packageJsonPath, 'utf-8'),
-    ).version;
+    version = (await readPackageJson(root)).version;
   }
 
   const projectName =
@@ -270,24 +273,14 @@ export async function create({
     });
 
     if (tool === 'biome') {
+      const packageJson = await readPackageJson(distFolder);
       let biomeVersion: string =
-        JSON.parse(
-          await fs.promises.readFile(
-            path.join(distFolder, 'package.json'),
-            'utf-8',
-          ),
-        ).devDependencies?.['@biomejs/biome'] ?? '1.9.4';
+        packageJson.devDependencies?.['@biomejs/biome'] ?? '1.9.4';
 
-      biomeVersion = biomeVersion
-        .split('.')
-        .slice(0, 3)
-        .map((s) => s.replace(/\W/g, ''))
-        .join('.');
+      biomeVersion = biomeVersion.replace(/\^/, '');
 
       const biomeJsonPath = path.join(distFolder, 'biome.json');
-      const biomeJson = JSON.parse(
-        await fs.promises.readFile(biomeJsonPath, 'utf-8'),
-      );
+      const biomeJson = await readJSON(biomeJsonPath);
 
       biomeJson.$schema = biomeJson.$schema.replace('{version}', biomeVersion);
 
