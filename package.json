@@ -42,18 +42,18 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@clack/prompts": "^0.10.0",
-    "@microsoft/api-extractor": "^7.51.0",
-    "@rslib/core": "0.5.2",
+    "@microsoft/api-extractor": "^7.52.2",
+    "@rslib/core": "0.6.1",
     "@types/minimist": "^1.2.5",
-    "@types/node": "22.13.7",
+    "@types/node": "22.13.14",
     "deepmerge": "^4.3.1",
     "minimist": "^1.2.8",
     "picocolors": "^1.1.1",
     "rslog": "^1.2.3",
-    "simple-git-hooks": "^2.11.1",
+    "simple-git-hooks": "^2.12.1",
     "typescript": "^5.8.2"
   },
-  "packageManager": "pnpm@10.5.2",
+  "packageManager": "pnpm@10.7.0",
   "publishConfig": {
     "access": "public",
     "provenance": true,
