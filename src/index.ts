@@ -80,7 +80,7 @@ export type Argv = {
   template?: string;
   override?: boolean;
   tools?: string | string[];
-  packageName?: string;
+  'package-name'?: string;
 };
 
 function logHelpMessage(name: string, templates: string[]) {
@@ -199,7 +199,7 @@ export async function create({
     );
 
   const formatted = formatProjectName(projectName);
-  const targetDir = formatted.targetDir;
+  const { targetDir } = formatted;
   const packageName = argv['package-name'] || formatted.packageName;
   const distFolder = path.isAbsolute(targetDir)
     ? targetDir
