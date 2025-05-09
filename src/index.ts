@@ -80,6 +80,7 @@ export type Argv = {
   template?: string;
   override?: boolean;
   tools?: string | string[];
+  packageName?: string;
 };
 
 function logHelpMessage(name: string, templates: string[]) {
@@ -93,6 +94,7 @@ function logHelpMessage(name: string, templates: string[]) {
      -t, --template   specify the template to use
      --tools          select additional tools (biome, eslint, prettier)
      --override       override files in target directory
+     --package-name   specify the package name
    
    Templates:
 
@@ -196,7 +198,9 @@ export async function create({
       }),
     );
 
-  const { targetDir, packageName } = formatProjectName(projectName);
+  const formatted = formatProjectName(projectName);
+  const targetDir = formatted.targetDir;
+  const packageName = argv['package-name'] || formatted.packageName;
   const distFolder = path.isAbsolute(targetDir)
     ? targetDir
     : path.join(cwd, targetDir);
