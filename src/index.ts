@@ -110,6 +110,10 @@ async function getTools({ tools, dir, template }: Argv) {
   if (dir && template) {
     return [];
   }
+  // skip tools selection when tools is empty string
+  if (tools === '') {
+    return [];
+  }
 
   return checkCancel<string[]>(
     await multiselect({
