@@ -151,6 +151,7 @@ export async function create({
   getTemplateName,
   mapESLintTemplate,
   version,
+  skipNote,
 }: {
   name: string;
   root: string;
@@ -159,6 +160,7 @@ export async function create({
   getTemplateName: (argv: Argv) => Promise<string>;
   mapESLintTemplate: (templateName: string) => ESLintTemplateName | null;
   version?: Record<string, string> | string;
+  skipNote?: boolean;
 }) {
   const argv = minimist<Argv>(process.argv.slice(2), {
     alias: { h: 'help', d: 'dir', t: 'template' },
@@ -299,7 +301,9 @@ export async function create({
     `4. ${color.cyan(`${pkgManager} run dev`)}`,
   ];
 
-  note(nextSteps.map((step) => color.reset(step)).join('\n'), 'Next steps');
+  if (!skipNote) {
+    note(nextSteps.map((step) => color.reset(step)).join('\n'), 'Next steps');
+  }
 
   outro('All set, happy coding!');
 }
