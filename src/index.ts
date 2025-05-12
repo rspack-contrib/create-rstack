@@ -157,6 +157,7 @@ export async function create({
   getTemplateName,
   mapESLintTemplate,
   version,
+  noteInformation,
 }: {
   name: string;
   root: string;
@@ -165,6 +166,7 @@ export async function create({
   getTemplateName: (argv: Argv) => Promise<string>;
   mapESLintTemplate: (templateName: string) => ESLintTemplateName | null;
   version?: Record<string, string> | string;
+  noteInformation?: string[];
 }) {
   const argv = minimist<Argv>(process.argv.slice(2), {
     alias: { h: 'help', d: 'dir', t: 'template' },
@@ -300,12 +302,14 @@ export async function create({
     }
   }
 
-  const nextSteps = [
-    `1. ${color.cyan(`cd ${targetDir}`)}`,
-    `2. ${color.cyan('git init')} ${color.dim('(optional)')}`,
-    `3. ${color.cyan(`${pkgManager} install`)}`,
-    `4. ${color.cyan(`${pkgManager} run dev`)}`,
-  ];
+  const nextSteps = noteInformation?.length
+    ? noteInformation
+    : [
+        `1. ${color.cyan(`cd ${targetDir}`)}`,
+        `2. ${color.cyan('git init')} ${color.dim('(optional)')}`,
+        `3. ${color.cyan(`${pkgManager} install`)}`,
+        `4. ${color.cyan(`${pkgManager} run dev`)}`,
+      ];
 
   note(nextSteps.map((step) => color.reset(step)).join('\n'), 'Next steps');
 
