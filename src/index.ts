@@ -311,8 +311,9 @@ export async function create({
         `4. ${color.cyan(`${pkgManager} run dev`)}`,
       ];
 
-  nextSteps.length &&
+  if (nextSteps.length) {
     note(nextSteps.map((step) => color.reset(step)).join('\n'), 'Next steps');
+  }
 
   outro('All set, happy coding!');
 }
