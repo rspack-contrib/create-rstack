@@ -302,7 +302,7 @@ export async function create({
     }
   }
 
-  const nextSteps = noteInformation?.length
+  const nextSteps = noteInformation
     ? noteInformation
     : [
         `1. ${color.cyan(`cd ${targetDir}`)}`,
@@ -311,7 +311,9 @@ export async function create({
         `4. ${color.cyan(`${pkgManager} run dev`)}`,
       ];
 
-  note(nextSteps.map((step) => color.reset(step)).join('\n'), 'Next steps');
+  if (nextSteps.length) {
+    note(nextSteps.map((step) => color.reset(step)).join('\n'), 'Next steps');
+  }
 
   outro('All set, happy coding!');
 }
