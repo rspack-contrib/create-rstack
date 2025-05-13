@@ -194,8 +194,8 @@ export async function create({
     checkCancel<string>(
       await text({
         message: 'Project name or path',
-        placeholder: `${name.toLocaleLowerCase()}-project`,
-        defaultValue: `${name.toLocaleLowerCase()}-project`,
+        placeholder: `${name.toLowerCase()}-project`,
+        defaultValue: `${name.toLowerCase()}-project`,
         validate(value) {
           if (value.length === 0) {
             return 'Project name is required';
