@@ -21,8 +21,8 @@ importers:
         specifier: 0.9.1
         version: 0.9.1(@microsoft/api-extractor@7.52.8(@types/node@22.15.29))(typescript@5.8.3)
       '@rstest/core':
-        specifier: https://pkg.pr.new/web-infra-dev/rstest/@rstest/core@1b40438
-        version: https://pkg.pr.new/web-infra-dev/rstest/@rstest/core@1b40438
+        specifier: 0.0.1
+        version: 0.0.1
       '@types/minimist':
         specifier: ^1.2.5
         version: 1.2.5
@@ -360,9 +360,8 @@ packages:
     resolution: {integrity: sha512-VynGOEsVw2s8TAlLf/uESfrgfrq2+rcXB1muPJYBWbsm1Oa6r5qVQhjA5ggM6z/coYPrsVMgovl3Ff7Q7OCp1w==}
     engines: {node: '>=16.0.0'}
 
-  '@rstest/core@https://pkg.pr.new/web-infra-dev/rstest/@rstest/core@1b40438':
-    resolution: {tarball: https://pkg.pr.new/web-infra-dev/rstest/@rstest/core@1b40438}
-    version: 0.0.0
+  '@rstest/core@0.0.1':
+    resolution: {integrity: sha512-Kg/ormFfyCTJGDJY4HYtd0zy9d8Kdd+2F4S1WcMgLQBep4rEZ0dqiXcUNqzYNLu400YxMnIMIhyZDiJjpOUgVA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -988,7 +987,7 @@ snapshots:
 
   '@rspack/lite-tapable@1.0.1': {}
 
-  '@rstest/core@https://pkg.pr.new/web-infra-dev/rstest/@rstest/core@1b40438':
+  '@rstest/core@0.0.1':
     dependencies:
       '@rsbuild/core': 1.4.0-beta.2
       '@types/chai': 5.2.2
