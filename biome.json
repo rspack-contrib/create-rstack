@@ -7,9 +7,6 @@
       }
     }
   },
-  "files": {
-    "includes": ["**/*", "!**/template-biome/*"]
-  },
   "vcs": {
     "enabled": true,
     "defaultBranch": "main",
