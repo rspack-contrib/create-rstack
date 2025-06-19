@@ -1,6 +1,5 @@
 import fs from 'node:fs';
-import path from 'node:path';
-import { dirname } from 'node:path';
+import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   cancel,
@@ -285,12 +284,16 @@ export async function create({
     if (tool === 'biome') {
       const packageJson = await readPackageJson(distFolder);
       let biomeVersion: string =
-        packageJson.devDependencies?.['@biomejs/biome'] ?? '1.9.4';
+        packageJson.devDependencies?.['@biomejs/biome'] ?? '2.0.0';
 
       biomeVersion = biomeVersion.replace(/\^/, '');
 
+      const biomeJsonTemplatePath = path.join(
+        distFolder,
+        'biome.json.template',
+      );
       const biomeJsonPath = path.join(distFolder, 'biome.json');
-      const biomeJson = await readJSON(biomeJsonPath);
+      const biomeJson = await readJSON(biomeJsonTemplatePath);
 
       biomeJson.$schema = biomeJson.$schema.replace('{version}', biomeVersion);
 
