@@ -302,6 +302,7 @@ export async function create({
         `${JSON.stringify(biomeJson, null, 2)}\n`,
         'utf-8',
       );
+      await fs.promises.rm(biomeJsonTemplatePath);
     }
   }
 
