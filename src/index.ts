@@ -282,27 +282,10 @@ export async function create({
     });
 
     if (tool === 'biome') {
-      const packageJson = await readPackageJson(distFolder);
-      let biomeVersion: string =
-        packageJson.devDependencies?.['@biomejs/biome'] ?? '2.0.0';
-
-      biomeVersion = biomeVersion.replace(/\^/, '');
-
-      const biomeJsonTemplatePath = path.join(
-        distFolder,
-        'biome.json.template',
+      await fs.promises.rename(
+        path.join(distFolder, 'biome.json.template'),
+        path.join(distFolder, 'biome.json'),
       );
-      const biomeJsonPath = path.join(distFolder, 'biome.json');
-      const biomeJson = await readJSON(biomeJsonTemplatePath);
-
-      biomeJson.$schema = biomeJson.$schema.replace('{version}', biomeVersion);
-
-      await fs.promises.writeFile(
-        biomeJsonPath,
-        `${JSON.stringify(biomeJson, null, 2)}\n`,
-        'utf-8',
-      );
-      await fs.promises.rm(biomeJsonTemplatePath);
     }
   }
 
