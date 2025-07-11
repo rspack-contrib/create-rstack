@@ -163,7 +163,10 @@ export async function create({
   skipFiles?: string[];
   templates: string[];
   getTemplateName: (argv: Argv) => Promise<string>;
-  mapESLintTemplate: (templateName: string) => ESLintTemplateName | null;
+  mapESLintTemplate: (
+    templateName: string,
+    distFolder: string,
+  ) => ESLintTemplateName | null;
   version?: Record<string, string> | string;
   noteInformation?: string[];
 }) {
@@ -255,7 +258,7 @@ export async function create({
     const toolFolder = path.join(packageRoot, `template-${tool}`);
 
     if (tool === 'eslint') {
-      const eslintTemplateName = mapESLintTemplate(templateName);
+      const eslintTemplateName = mapESLintTemplate(templateName, distFolder);
 
       if (!eslintTemplateName) {
         continue;
