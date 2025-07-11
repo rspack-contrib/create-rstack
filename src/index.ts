@@ -165,7 +165,7 @@ export async function create({
   getTemplateName: (argv: Argv) => Promise<string>;
   mapESLintTemplate: (
     templateName: string,
-    distFolder: string,
+    context: { distFolder: string },
   ) => ESLintTemplateName | null;
   version?: Record<string, string> | string;
   noteInformation?: string[];
@@ -258,7 +258,9 @@ export async function create({
     const toolFolder = path.join(packageRoot, `template-${tool}`);
 
     if (tool === 'eslint') {
-      const eslintTemplateName = mapESLintTemplate(templateName, distFolder);
+      const eslintTemplateName = mapESLintTemplate(templateName, {
+        distFolder,
+      });
 
       if (!eslintTemplateName) {
         continue;
