@@ -407,8 +407,8 @@ export function copyFolder({
         mergePackageJson(targetPackage, srcFile);
       } else {
         fs.copyFileSync(srcFile, distFile);
-        updatePackageJson(distFile, version, packageName);
       }
+      updatePackageJson(distFile, version, packageName);
     } else {
       fs.copyFileSync(srcFile, distFile);
     }
