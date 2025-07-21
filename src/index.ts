@@ -103,7 +103,8 @@ function logHelpMessage(name: string, templates: string[]) {
 
 async function getTools({ tools, dir, template }: Argv) {
   if (tools) {
-    return Array.isArray(tools) ? tools : [tools];
+    // support --tools 'biome eslint prettier'
+    return Array.isArray(tools) ? tools : tools.split(' ');
   }
   // skip tools selection when using CLI options
   if (dir && template) {
