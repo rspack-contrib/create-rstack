@@ -7,6 +7,6 @@
     "format": "biome format --write"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.0.6"
+    "@biomejs/biome": "2.1.3"
   }
 }
