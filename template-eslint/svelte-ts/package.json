@@ -10,7 +10,7 @@
     "eslint": "^9.35.0",
     "eslint-plugin-svelte": "^3.12.2",
     "globals": "^16.3.0",
-    "typescript-eslint": "^8.42.0"
+    "typescript-eslint": "^8.43.0"
   },
   "type": "module"
 }
