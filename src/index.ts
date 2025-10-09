@@ -254,6 +254,8 @@ export async function create({
   });
 
   const packageRoot = path.resolve(__dirname, '..');
+  const agentsMdSearchDirs = [srcFolder, commonFolder];
+
   for (const tool of tools) {
     const toolFolder = path.join(packageRoot, `template-${tool}`);
 
@@ -275,6 +277,8 @@ export async function create({
         isMergePackageJson: true,
       });
 
+      agentsMdSearchDirs.push(toolFolder);
+      agentsMdSearchDirs.push(subFolder);
       continue;
     }
 
@@ -286,12 +290,21 @@ export async function create({
       isMergePackageJson: true,
     });
 
+    agentsMdSearchDirs.push(toolFolder);
+
     if (tool === 'biome') {
       await fs.promises.rename(
         path.join(distFolder, 'biome.json.template'),
         path.join(distFolder, 'biome.json'),
       );
     }
+  }
+
+  const agentsFiles = collectAgentsFiles(agentsMdSearchDirs);
+  if (agentsFiles.length > 0) {
+    const mergedAgents = mergeAgentsFiles(agentsFiles);
+    const agentsPath = path.join(distFolder, 'AGENTS.md');
+    fs.writeFileSync(agentsPath, `${mergedAgents}\n`);
   }
 
   const nextSteps = noteInformation
@@ -460,3 +473,105 @@ const updatePackageJson = (
 
   fs.writeFileSync(pkgJsonPath, `${JSON.stringify(pkg, null, 2)}\n`);
 };
+
+/**
+ * Read AGENTS.md files from template directories
+ */
+function readAgentsFile(filePath: string): string | null {
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+  return fs.readFileSync(filePath, 'utf-8');
+}
+
+/**
+ * Parse AGENTS.md content and extract sections
+ */
+function parseAgentsContent(
+  content: string,
+): Record<string, { title: string; content: string }> {
+  const sections: Record<string, { title: string; content: string }> = {};
+  const lines = content.split('\n');
+  let currentKey = '';
+  let currentTitle = '';
+  let currentContent: string[] = [];
+
+  for (const line of lines) {
+    const sectionMatch = line.match(/^##\s+(.+)$/);
+    if (sectionMatch) {
+      if (currentKey) {
+        sections[currentKey] = {
+          title: currentTitle,
+          content: currentContent.join('\n').trim(),
+        };
+      }
+      currentTitle = sectionMatch[1];
+      currentKey = sectionMatch[1].toLowerCase();
+      currentContent = [];
+    } else if (currentKey) {
+      currentContent.push(line);
+    }
+  }
+
+  if (currentKey) {
+    sections[currentKey] = {
+      title: currentTitle,
+      content: currentContent.join('\n').trim(),
+    };
+  }
+
+  return sections;
+}
+
+/**
+ * Merge AGENTS.md files from multiple sources
+ */
+function mergeAgentsFiles(agentsFiles: string[]): string {
+  const allSections: Record<string, { title: string; contents: string[] }> = {};
+
+  for (const fileContent of agentsFiles) {
+    if (!fileContent) continue;
+    const sections = parseAgentsContent(fileContent);
+
+    for (const [key, section] of Object.entries(sections)) {
+      if (!allSections[key]) {
+        allSections[key] = { title: section.title, contents: [] };
+      }
+      if (
+        section.content &&
+        !allSections[key].contents.includes(section.content)
+      ) {
+        allSections[key].contents.push(section.content);
+      }
+    }
+  }
+
+  const result: string[] = [];
+
+  for (const [, section] of Object.entries(allSections)) {
+    result.push(`## ${section.title}`);
+    result.push('');
+    for (const content of section.contents) {
+      result.push(content);
+      result.push('');
+    }
+  }
+
+  return result.join('\n').trim();
+}
+
+/**
+ * Collect AGENTS.md files from template directories
+ */
+function collectAgentsFiles(agentsMdSearchDirs: string[]): string[] {
+  const agentsFiles: string[] = [];
+
+  for (const dir of agentsMdSearchDirs) {
+    const agentsContent = readAgentsFile(path.join(dir, 'AGENTS.md'));
+    if (agentsContent) {
+      agentsFiles.push(agentsContent);
+    }
+  }
+
+  return agentsFiles;
+}
