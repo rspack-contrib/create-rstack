@@ -116,3 +116,27 @@ test('should generate AGENTS.md with eslint tool and template mapping', async ()
   assert.match(content, /## Tools/);
   assert.match(content, /### ESLint/); // from template-eslint/AGENTS.md
 });
+
+test('should merge top-level sections from AGENTS.md files', async () => {
+  const projectDir = path.join(testDir, 'h1-support');
+  process.argv = ['node', 'test', '--dir', projectDir, '--template', 'vanilla'];
+
+  await create({
+    name: 'test',
+    root: fixturesDir,
+    templates: ['vanilla'],
+    getTemplateName: async () => 'vanilla',
+    mapESLintTemplate: () => null,
+  });
+
+  const agentsPath = path.join(projectDir, 'AGENTS.md');
+  assert.strictEqual(fs.existsSync(agentsPath), true);
+
+  const content = fs.readFileSync(agentsPath, 'utf-8');
+  const h1Matches = content.match(/^# Project Overview$/gm) ?? [];
+  assert.strictEqual(h1Matches.length, 1);
+  assert.match(
+    content,
+    /This section provides common guidance for all templates./,
+  );
+});

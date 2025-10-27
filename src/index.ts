@@ -489,24 +489,30 @@ function readAgentsFile(filePath: string): string | null {
  */
 function parseAgentsContent(
   content: string,
-): Record<string, { title: string; content: string }> {
-  const sections: Record<string, { title: string; content: string }> = {};
+): Record<string, { title: string; content: string; level: number }> {
+  const sections: Record<
+    string,
+    { title: string; content: string; level: number }
+  > = {};
   const lines = content.split('\n');
   let currentKey = '';
   let currentTitle = '';
+  let currentLevel = 0;
   let currentContent: string[] = [];
 
   for (const line of lines) {
-    const sectionMatch = line.match(/^##\s+(.+)$/);
+    const sectionMatch = line.match(/^(#{1,2})\s+(.+)$/);
     if (sectionMatch) {
       if (currentKey) {
         sections[currentKey] = {
           title: currentTitle,
+          level: currentLevel,
           content: currentContent.join('\n').trim(),
         };
       }
-      currentTitle = sectionMatch[1];
-      currentKey = sectionMatch[1].toLowerCase();
+      currentLevel = sectionMatch[1].length;
+      currentTitle = sectionMatch[2].trim();
+      currentKey = `${currentLevel}-${currentTitle.toLowerCase()}`;
       currentContent = [];
     } else if (currentKey) {
       currentContent.push(line);
@@ -516,6 +522,7 @@ function parseAgentsContent(
   if (currentKey) {
     sections[currentKey] = {
       title: currentTitle,
+      level: currentLevel,
       content: currentContent.join('\n').trim(),
     };
   }
@@ -527,7 +534,10 @@ function parseAgentsContent(
  * Merge AGENTS.md files from multiple sources
  */
 function mergeAgentsFiles(agentsFiles: string[]): string {
-  const allSections: Record<string, { title: string; contents: string[] }> = {};
+  const allSections: Record<
+    string,
+    { title: string; level: number; contents: string[] }
+  > = {};
 
   for (const fileContent of agentsFiles) {
     if (!fileContent) continue;
@@ -535,7 +545,11 @@ function mergeAgentsFiles(agentsFiles: string[]): string {
 
     for (const [key, section] of Object.entries(sections)) {
       if (!allSections[key]) {
-        allSections[key] = { title: section.title, contents: [] };
+        allSections[key] = {
+          title: section.title,
+          level: section.level,
+          contents: [],
+        };
       }
       if (
         section.content &&
@@ -549,7 +563,7 @@ function mergeAgentsFiles(agentsFiles: string[]): string {
   const result: string[] = [];
 
   for (const [, section] of Object.entries(allSections)) {
-    result.push(`## ${section.title}`);
+    result.push(`${'#'.repeat(section.level)} ${section.title}`);
     result.push('');
     for (const content of section.contents) {
       result.push(content);
