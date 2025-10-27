@@ -1,3 +1,7 @@
+# Project Overview
+
+This section provides common guidance for all templates.
+
 ## Development
 
 ### Common Development
