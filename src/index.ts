@@ -84,16 +84,16 @@ export type Argv = {
 
 function logHelpMessage(name: string, templates: string[]) {
   logger.log(`
-   Usage: create-${name} [options]
+   Usage: create-${name} [dir] [options]
 
    Options:
    
-     -h, --help       display help for command
-     -d, --dir        create project in specified directory
-     -t, --template   specify the template to use
-     --tools          select additional tools (biome, eslint, prettier)
-     --override       override files in target directory
-     --package-name   specify the package name
+     -h, --help            display help for command
+     -d, --dir <dir>       create project in specified directory
+     -t, --template <tpl>  specify the template to use
+     --tools <tool>        select additional tools (biome, eslint, prettier)
+     --override            override files in target directory
+     --packageName <name>  specify the package name
    
    Templates:
 
