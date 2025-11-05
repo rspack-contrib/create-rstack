@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { assert, beforeEach, test } from '@rstest/core';
+import { assert, beforeEach, expect, test } from '@rstest/core';
 import { create } from '../dist/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -44,11 +44,34 @@ test('should generate AGENTS.md with no tools selected', async () => {
   assert.strictEqual(fs.existsSync(agentsPath), true);
 
   const content = fs.readFileSync(agentsPath, 'utf-8');
-  assert.match(content, /## Template Info/);
-  assert.match(content, /## Development/);
-  // template-common has Tools section
-  assert.match(content, /## Tools/);
-  assert.match(content, /### Common Tools/);
+  expect(content).toMatchInlineSnapshot(`
+    "# Project Overview
+
+    This section provides common guidance for all templates.
+
+    ## Development
+
+    ### Common Development
+    - Common development instructions
+    - Available in all templates
+
+    ## Tools
+
+    ### Common Tools
+    - Tools that apply to all templates
+
+    ### Rstest
+
+    - Run \`npm run test\` to test your code
+
+    ## Template Info
+
+    ### Vanilla Template
+
+    - This is vanilla template specific content
+    - Only available in vanilla template
+    "
+  `);
 });
 
 test('should generate AGENTS.md with single tool selected', async () => {
@@ -76,11 +99,39 @@ test('should generate AGENTS.md with single tool selected', async () => {
   assert.strictEqual(fs.existsSync(agentsPath), true);
 
   const content = fs.readFileSync(agentsPath, 'utf-8');
-  assert.match(content, /## Template Info/);
-  assert.match(content, /## Development/);
-  assert.match(content, /## Tools/);
-  assert.match(content, /### Common Tools/); // from template-common
-  assert.match(content, /### Biome/); // from template-biome
+  expect(content).toMatchInlineSnapshot(`
+    "# Project Overview
+
+    This section provides common guidance for all templates.
+
+    ## Development
+
+    ### Common Development
+    - Common development instructions
+    - Available in all templates
+
+    ## Tools
+
+    ### Common Tools
+    - Tools that apply to all templates
+
+    ### Rstest
+
+    - Run \`npm run test\` to test your code
+
+    ### Biome
+
+    - Run \`npm run lint\` to lint your code
+    - Run \`npm run format\` to format your code
+
+    ## Template Info
+
+    ### Vanilla Template
+
+    - This is vanilla template specific content
+    - Only available in vanilla template
+    "
+  `);
 });
 
 test('should generate AGENTS.md with eslint tool and template mapping', async () => {
@@ -111,10 +162,38 @@ test('should generate AGENTS.md with eslint tool and template mapping', async ()
   assert.strictEqual(fs.existsSync(agentsPath), true);
 
   const content = fs.readFileSync(agentsPath, 'utf-8');
-  assert.match(content, /## Template Info/);
-  assert.match(content, /## Development/);
-  assert.match(content, /## Tools/);
-  assert.match(content, /### ESLint/); // from template-eslint/AGENTS.md
+  expect(content).toMatchInlineSnapshot(`
+    "# Project Overview
+
+    This section provides common guidance for all templates.
+
+    ## Development
+
+    ### Common Development
+    - Common development instructions
+    - Available in all templates
+
+    ## Tools
+
+    ### Common Tools
+    - Tools that apply to all templates
+
+    ### Rstest
+
+    - Run \`npm run test\` to test your code
+
+    ### ESLint
+
+    - Run \`npm run lint\` to lint your code
+
+    ## Template Info
+
+    ### Vanilla Template
+
+    - This is vanilla template specific content
+    - Only available in vanilla template
+    "
+  `);
 });
 
 test('should merge top-level sections from AGENTS.md files', async () => {
@@ -133,10 +212,32 @@ test('should merge top-level sections from AGENTS.md files', async () => {
   assert.strictEqual(fs.existsSync(agentsPath), true);
 
   const content = fs.readFileSync(agentsPath, 'utf-8');
-  const h1Matches = content.match(/^# Project Overview$/gm) ?? [];
-  assert.strictEqual(h1Matches.length, 1);
-  assert.match(
-    content,
-    /This section provides common guidance for all templates./,
-  );
+  expect(content).toMatchInlineSnapshot(`
+    "# Project Overview
+
+    This section provides common guidance for all templates.
+
+    ## Development
+
+    ### Common Development
+    - Common development instructions
+    - Available in all templates
+
+    ## Tools
+
+    ### Common Tools
+    - Tools that apply to all templates
+
+    ### Rstest
+
+    - Run \`npm run test\` to test your code
+
+    ## Template Info
+
+    ### Vanilla Template
+
+    - This is vanilla template specific content
+    - Only available in vanilla template
+    "
+  `);
 });

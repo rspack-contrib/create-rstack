@@ -270,7 +270,7 @@ export async function create({
   });
 
   const packageRoot = path.resolve(__dirname, '..');
-  const agentsMdSearchDirs = [srcFolder, commonFolder];
+  const agentsMdSearchDirs = [commonFolder, srcFolder];
 
   for (const tool of tools) {
     const toolFolder = path.join(packageRoot, `template-${tool}`);
