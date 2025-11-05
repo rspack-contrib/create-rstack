@@ -174,6 +174,11 @@ export async function create({
     alias: { h: 'help', d: 'dir', t: 'template' },
   });
 
+  // Set dir to first argument if not specified via `--dir`
+  if (!argv.dir && argv._[0]) {
+    argv.dir = argv._[0];
+  }
+
   console.log('');
   logger.greet(`◆  Create ${upperFirst(name)} Project`);
 
