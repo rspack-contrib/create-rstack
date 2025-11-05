@@ -149,6 +149,23 @@ const readJSON = async (path: string) =>
 const readPackageJson = async (filePath: string) =>
   readJSON(path.join(filePath, 'package.json'));
 
+const parseArgv = () => {
+  const argv = minimist<Argv>(process.argv.slice(2), {
+    alias: { h: 'help', d: 'dir', t: 'template' },
+  });
+
+  // Set dir to first argument if not specified via `--dir`
+  if (!argv.dir && argv._[0]) {
+    argv.dir = argv._[0];
+  }
+
+  if (argv['package-name']) {
+    argv.packageName = argv['package-name'];
+  }
+
+  return argv;
+};
+
 export async function create({
   name,
   root,
@@ -171,17 +188,10 @@ export async function create({
   version?: Record<string, string> | string;
   noteInformation?: string[];
 }) {
-  const argv = minimist<Argv>(process.argv.slice(2), {
-    alias: { h: 'help', d: 'dir', t: 'template' },
-  });
-
-  // Set dir to first argument if not specified via `--dir`
-  if (!argv.dir && argv._[0]) {
-    argv.dir = argv._[0];
-  }
-
   console.log('');
   logger.greet(`◆  Create ${upperFirst(name)} Project`);
+
+  const argv = parseArgv();
 
   if (argv.help) {
     logHelpMessage(name, templates);
@@ -214,8 +224,7 @@ export async function create({
 
   const formatted = formatProjectName(projectName);
   const { targetDir } = formatted;
-  const packageName =
-    argv.packageName || argv['package-name'] || formatted.packageName;
+  const packageName = argv.packageName || formatted.packageName;
   const distFolder = path.isAbsolute(targetDir)
     ? targetDir
     : path.join(cwd, targetDir);
