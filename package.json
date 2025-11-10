@@ -1,6 +1,6 @@
 {
   "name": "create-rstack",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "Create a new Rstack project",
   "repository": {
     "type": "git",
