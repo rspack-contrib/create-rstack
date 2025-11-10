@@ -83,7 +83,7 @@ export type Argv = {
   'package-name'?: string;
 };
 
-const BUILTIN_TOOLS = ['eslint', 'prettier', 'biome'];
+export const BUILTIN_TOOLS = ['eslint', 'prettier', 'biome'];
 
 function logHelpMessage(name: string, templates: string[]) {
   logger.log(`
