@@ -83,6 +83,8 @@ export type Argv = {
   'package-name'?: string;
 };
 
+const BUILTIN_TOOLS = ['eslint', 'prettier', 'biome'];
+
 function logHelpMessage(name: string, templates: string[]) {
   logger.log(`
    Usage: create-${name} [dir] [options]
@@ -104,7 +106,9 @@ function logHelpMessage(name: string, templates: string[]) {
 
 async function getTools({ tools, dir, template }: Argv) {
   if (tools) {
-    return Array.isArray(tools) ? tools : [tools];
+    let toolsArr = Array.isArray(tools) ? tools : [tools];
+    toolsArr = toolsArr.filter((tool) => BUILTIN_TOOLS.includes(tool));
+    return toolsArr;
   }
   // skip tools selection when using CLI options
   if (dir && template) {
