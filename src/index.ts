@@ -487,7 +487,12 @@ const updatePackageJson = (
     }
   }
 
-  if (name && name !== '.') {
+  if (name === '.') {
+    const projectName = path.basename(path.dirname(pkgJsonPath));
+    if (projectName.length) {
+      pkg.name = projectName;
+    }
+  } else if (name) {
     pkg.name = name;
   }
 
