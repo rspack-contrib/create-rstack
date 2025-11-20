@@ -121,8 +121,8 @@ test('should generate AGENTS.md with single tool selected', async () => {
 
     ### Biome
 
-    - Run \`npm run lint\` to lint your code
-    - Run \`npm run format\` to format your code
+    - Run \`pnpm run lint\` to lint your code
+    - Run \`pnpm run format\` to format your code
 
     ## Template Info
 
@@ -184,7 +184,7 @@ test('should generate AGENTS.md with eslint tool and template mapping', async ()
 
     ### ESLint
 
-    - Run \`npm run lint\` to lint your code
+    - Run \`pnpm run lint\` to lint your code
 
     ## Template Info
 
