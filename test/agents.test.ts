@@ -62,7 +62,7 @@ test('should generate AGENTS.md with no tools selected', async () => {
 
     ### Rstest
 
-    - Run \`npm run test\` to test your code
+    - Run \`pnpm run test\` to test your code
 
     ## Template Info
 

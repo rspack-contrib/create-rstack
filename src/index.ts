@@ -204,7 +204,7 @@ export async function create({
 
   const cwd = process.cwd();
   const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent);
-  const pkgManager = pkgInfo ? pkgInfo.name : 'npm';
+  const packageManager = pkgInfo ? pkgInfo.name : 'npm';
 
   // No version provided, read from package.json
   if (!version) {
@@ -264,12 +264,14 @@ export async function create({
     to: distFolder,
     version,
     skipFiles,
+    packageManager,
   });
   copyFolder({
     from: srcFolder,
     to: distFolder,
     version,
     packageName,
+    packageManager,
     skipFiles,
   });
 
@@ -294,6 +296,7 @@ export async function create({
         to: distFolder,
         version,
         skipFiles,
+        packageManager,
         isMergePackageJson: true,
       });
 
@@ -307,6 +310,7 @@ export async function create({
       to: distFolder,
       version,
       skipFiles,
+      packageManager,
       isMergePackageJson: true,
     });
 
@@ -324,7 +328,10 @@ export async function create({
   if (agentsFiles.length > 0) {
     const mergedAgents = mergeAgentsFiles(agentsFiles);
     const agentsPath = path.join(distFolder, 'AGENTS.md');
-    fs.writeFileSync(agentsPath, `${mergedAgents}\n`);
+    fs.writeFileSync(
+      agentsPath,
+      `${replacePlaceholder(mergedAgents, packageManager)}\n`,
+    );
   }
 
   const nextSteps = noteInformation
@@ -332,8 +339,8 @@ export async function create({
     : [
         `1. ${color.cyan(`cd ${targetDir}`)}`,
         `2. ${color.cyan('git init')} ${color.dim('(optional)')}`,
-        `3. ${color.cyan(`${pkgManager} install`)}`,
-        `4. ${color.cyan(`${pkgManager} run dev`)}`,
+        `3. ${color.cyan(`${packageManager} install`)}`,
+        `4. ${color.cyan(`${packageManager} run dev`)}`,
       ];
 
   if (nextSteps.length) {
@@ -382,6 +389,12 @@ export function mergePackageJson(targetPackage: string, extraPackage: string) {
   fs.writeFileSync(targetPackage, `${JSON.stringify(mergedJson, null, 2)}\n`);
 }
 
+const isMarkdown = (file: string) =>
+  file.endsWith('.md') || file.endsWith('.mdx');
+
+const replacePlaceholder = (content: string, packageManager: string) =>
+  content.replace(/{{ packageManager }}/g, packageManager);
+
 /**
  * Copy files from one folder to another.
  * @param from Source folder
@@ -396,6 +409,7 @@ export function copyFolder({
   to,
   version,
   packageName,
+  packageManager,
   isMergePackageJson,
   skipFiles = [],
 }: {
@@ -403,6 +417,7 @@ export function copyFolder({
   to: string;
   version?: string | Record<string, string>;
   packageName?: string;
+  packageManager: string;
   isMergePackageJson?: boolean;
   skipFiles?: string[];
 }) {
@@ -430,6 +445,7 @@ export function copyFolder({
       copyFolder({
         from: srcFile,
         to: distFile,
+        packageManager,
         version,
         skipFiles,
       });
@@ -444,6 +460,11 @@ export function copyFolder({
       updatePackageJson(distFile, version, packageName);
     } else {
       fs.copyFileSync(srcFile, distFile);
+
+      if (isMarkdown(distFile)) {
+        const content = fs.readFileSync(distFile, 'utf-8');
+        fs.writeFileSync(distFile, replacePlaceholder(content, packageManager));
+      }
     }
   }
 }

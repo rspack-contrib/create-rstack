@@ -9,4 +9,4 @@
 
 ### Rstest
 
-- Run `npm run test` to test your code
+- Run `{{ packageManager }} run test` to test your code
