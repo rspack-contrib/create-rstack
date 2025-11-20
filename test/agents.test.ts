@@ -62,7 +62,7 @@ test('should generate AGENTS.md with no tools selected', async () => {
 
     ### Rstest
 
-    - Run \`npm run test\` to test your code
+    - Run \`pnpm run test\` to test your code
 
     ## Template Info
 
@@ -117,12 +117,12 @@ test('should generate AGENTS.md with single tool selected', async () => {
 
     ### Rstest
 
-    - Run \`npm run test\` to test your code
+    - Run \`pnpm run test\` to test your code
 
     ### Biome
 
-    - Run \`npm run lint\` to lint your code
-    - Run \`npm run format\` to format your code
+    - Run \`pnpm run lint\` to lint your code
+    - Run \`pnpm run format\` to format your code
 
     ## Template Info
 
@@ -180,11 +180,11 @@ test('should generate AGENTS.md with eslint tool and template mapping', async ()
 
     ### Rstest
 
-    - Run \`npm run test\` to test your code
+    - Run \`pnpm run test\` to test your code
 
     ### ESLint
 
-    - Run \`npm run lint\` to lint your code
+    - Run \`pnpm run lint\` to lint your code
 
     ## Template Info
 
@@ -230,7 +230,7 @@ test('should merge top-level sections from AGENTS.md files', async () => {
 
     ### Rstest
 
-    - Run \`npm run test\` to test your code
+    - Run \`pnpm run test\` to test your code
 
     ## Template Info
 

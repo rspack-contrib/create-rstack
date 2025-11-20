@@ -2,4 +2,4 @@
 
 ### Prettier
 
-- Run `npm run format` to format your code
+- Run `{{ packageManager }} run format` to format your code

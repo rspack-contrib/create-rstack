@@ -27,7 +27,7 @@
     "dev": "rslib build --watch",
     "lint": "biome check .",
     "lint:write": "biome check . --write",
-    "prepare": "simple-git-hooks && npm run build",
+    "prepare": "simple-git-hooks && pnpm run build",
     "test": "rstest run",
     "bump": "npx bumpp"
   },
