@@ -205,6 +205,7 @@ export async function create({
   const cwd = process.cwd();
   const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent);
   const packageManager = pkgInfo ? pkgInfo.name : 'npm';
+  const templateParameters = { packageManager };
 
   // No version provided, read from package.json
   if (!version) {
@@ -264,14 +265,14 @@ export async function create({
     to: distFolder,
     version,
     skipFiles,
-    packageManager,
+    templateParameters,
   });
   copyFolder({
     from: srcFolder,
     to: distFolder,
     version,
     packageName,
-    packageManager,
+    templateParameters,
     skipFiles,
   });
 
@@ -296,7 +297,7 @@ export async function create({
         to: distFolder,
         version,
         skipFiles,
-        packageManager,
+        templateParameters,
         isMergePackageJson: true,
       });
 
@@ -310,7 +311,7 @@ export async function create({
       to: distFolder,
       version,
       skipFiles,
-      packageManager,
+      templateParameters,
       isMergePackageJson: true,
     });
 
@@ -330,7 +331,7 @@ export async function create({
     const agentsPath = path.join(distFolder, 'AGENTS.md');
     fs.writeFileSync(
       agentsPath,
-      `${replacePlaceholder(mergedAgents, packageManager)}\n`,
+      `${replacePlaceholder(mergedAgents, templateParameters)}\n`,
     );
   }
 
@@ -392,8 +393,19 @@ export function mergePackageJson(targetPackage: string, extraPackage: string) {
 const isMarkdown = (file: string) =>
   file.endsWith('.md') || file.endsWith('.mdx');
 
-const replacePlaceholder = (content: string, packageManager: string) =>
-  content.replace(/{{ packageManager }}/g, packageManager);
+const replacePlaceholder = (
+  content: string,
+  templateParameters: Record<string, string>,
+) => {
+  let result = content;
+  for (const key of Object.keys(templateParameters)) {
+    result = result.replace(
+      new RegExp(`{{ ${key} }}`, 'g'),
+      templateParameters[key],
+    );
+  }
+  return result;
+};
 
 /**
  * Copy files from one folder to another.
@@ -409,7 +421,7 @@ export function copyFolder({
   to,
   version,
   packageName,
-  packageManager,
+  templateParameters,
   isMergePackageJson,
   skipFiles = [],
 }: {
@@ -417,7 +429,7 @@ export function copyFolder({
   to: string;
   version?: string | Record<string, string>;
   packageName?: string;
-  packageManager: string;
+  templateParameters?: Record<string, string>;
   isMergePackageJson?: boolean;
   skipFiles?: string[];
 }) {
@@ -445,7 +457,7 @@ export function copyFolder({
       copyFolder({
         from: srcFile,
         to: distFile,
-        packageManager,
+        templateParameters,
         version,
         skipFiles,
       });
@@ -461,9 +473,12 @@ export function copyFolder({
     } else {
       fs.copyFileSync(srcFile, distFile);
 
-      if (isMarkdown(distFile)) {
+      if (templateParameters && isMarkdown(distFile)) {
         const content = fs.readFileSync(distFile, 'utf-8');
-        fs.writeFileSync(distFile, replacePlaceholder(content, packageManager));
+        fs.writeFileSync(
+          distFile,
+          replacePlaceholder(content, templateParameters),
+        );
       }
     }
   }
