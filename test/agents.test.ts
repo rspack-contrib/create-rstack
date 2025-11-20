@@ -117,7 +117,7 @@ test('should generate AGENTS.md with single tool selected', async () => {
 
     ### Rstest
 
-    - Run \`npm run test\` to test your code
+    - Run \`pnpm run test\` to test your code
 
     ### Biome
 
@@ -180,7 +180,7 @@ test('should generate AGENTS.md with eslint tool and template mapping', async ()
 
     ### Rstest
 
-    - Run \`npm run test\` to test your code
+    - Run \`pnpm run test\` to test your code
 
     ### ESLint
 
@@ -230,7 +230,7 @@ test('should merge top-level sections from AGENTS.md files', async () => {
 
     ### Rstest
 
-    - Run \`npm run test\` to test your code
+    - Run \`pnpm run test\` to test your code
 
     ## Template Info
 
