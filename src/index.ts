@@ -331,7 +331,7 @@ export async function create({
     const agentsPath = path.join(distFolder, 'AGENTS.md');
     fs.writeFileSync(
       agentsPath,
-      `${replacePlaceholder(mergedAgents, { packageManager })}\n`,
+      `${replacePlaceholder(mergedAgents, templateParameters)}\n`,
     );
   }
 
