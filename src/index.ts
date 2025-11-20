@@ -594,7 +594,7 @@ function parseAgentsContent(
 /**
  * Merge AGENTS.md files from multiple sources
  */
-function mergeAgentsFiles(agentsFiles: string[]): string {
+export function mergeAgentsFiles(agentsFiles: string[]): string {
   const allSections: Record<
     string,
     { title: string; level: number; contents: string[] }
@@ -638,7 +638,7 @@ function mergeAgentsFiles(agentsFiles: string[]): string {
 /**
  * Collect AGENTS.md files from template directories
  */
-function collectAgentsFiles(agentsMdSearchDirs: string[]): string[] {
+export function collectAgentsFiles(agentsMdSearchDirs: string[]): string[] {
   const agentsFiles: string[] = [];
 
   for (const dir of agentsMdSearchDirs) {
