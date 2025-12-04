@@ -347,13 +347,15 @@ export async function create({
       const matchedTool = extraTools.find(
         (extraTool) => extraTool.value === tool,
       );
-      if (matchedTool?.action) {
-        await matchedTool.action();
+      if (matchedTool) {
+        if (matchedTool.action) {
+          await matchedTool.action();
+        }
+        if (matchedTool.command) {
+          runCommand(matchedTool.command, distFolder);
+        }
+        continue;
       }
-      if (matchedTool?.command) {
-        runCommand(matchedTool.command, distFolder);
-      }
-      continue;
     }
 
     // Handle built-in tools
