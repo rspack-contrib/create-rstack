@@ -45,7 +45,6 @@ test('should run extra tool action', async () => {
     root: fixturesDir,
     templates: ['vanilla'],
     getTemplateName: async () => 'vanilla',
-    mapESLintTemplate: () => null,
     extraTools: [
       {
         value: 'custom-action',
@@ -82,7 +81,6 @@ test('should run extra tool command', async () => {
     root: fixturesDir,
     templates: ['vanilla'],
     getTemplateName: async () => 'vanilla',
-    mapESLintTemplate: () => null,
     extraTools: [
       {
         value: 'custom-command',

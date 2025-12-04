@@ -234,7 +234,11 @@ export async function create({
   skipFiles?: string[];
   templates: string[];
   getTemplateName: (argv: Argv) => Promise<string>;
-  mapESLintTemplate: (
+  /**
+   * Map the template name to the ESLint template name.
+   * @default () => 'vanilla-ts'
+   */
+  mapESLintTemplate?: (
     templateName: string,
     context: { distFolder: string },
   ) => ESLintTemplateName | null;
@@ -351,9 +355,11 @@ export async function create({
     const toolFolder = path.join(packageRoot, `template-${tool}`);
 
     if (tool === 'eslint') {
-      const eslintTemplateName = mapESLintTemplate(templateName, {
-        distFolder,
-      });
+      const eslintTemplateName = mapESLintTemplate
+        ? mapESLintTemplate(templateName, {
+            distFolder,
+          })
+        : 'vanilla-ts';
 
       if (!eslintTemplateName) {
         continue;
