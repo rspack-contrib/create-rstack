@@ -10,6 +10,7 @@ import {
   select,
   text,
 } from '@clack/prompts';
+import spawn from 'cross-spawn';
 import deepmerge from 'deepmerge';
 import minimist from 'minimist';
 import color from 'picocolors';
@@ -104,10 +105,18 @@ function logHelpMessage(name: string, templates: string[]) {
 `);
 }
 
-async function getTools({ tools, dir, template }: Argv) {
+async function getTools(
+  { tools, dir, template }: Argv,
+  extraTools?: ExtraTool[],
+) {
+  // Check if tools are specified via CLI options
   if (tools) {
     let toolsArr = Array.isArray(tools) ? tools : [tools];
-    toolsArr = toolsArr.filter((tool) => BUILTIN_TOOLS.includes(tool));
+    toolsArr = toolsArr.filter(
+      (tool) =>
+        BUILTIN_TOOLS.includes(tool) ||
+        extraTools?.some((extraTool) => extraTool.value === tool),
+    );
     return toolsArr;
   }
   // skip tools selection when using CLI options
@@ -119,15 +128,27 @@ async function getTools({ tools, dir, template }: Argv) {
     return [];
   }
 
+  const options = [
+    { value: 'biome', label: 'Add Biome for code linting and formatting' },
+    { value: 'eslint', label: 'Add ESLint for code linting' },
+    { value: 'prettier', label: 'Add Prettier for code formatting' },
+  ];
+
+  if (extraTools) {
+    options.push(
+      ...extraTools.map((tool) => ({
+        value: tool.value,
+        label: tool.label,
+        hint: tool.command,
+      })),
+    );
+  }
+
   return checkCancel<string[]>(
     await multiselect({
       message:
         'Select additional tools (Use <space> to select, <enter> to continue)',
-      options: [
-        { value: 'biome', label: 'Add Biome for code linting and formatting' },
-        { value: 'eslint', label: 'Add ESLint for code linting' },
-        { value: 'prettier', label: 'Add Prettier for code formatting' },
-      ],
+      options,
       required: false,
     }),
   );
@@ -170,6 +191,33 @@ const parseArgv = () => {
   return argv;
 };
 
+type ExtraTool = {
+  /**
+   * The value of the multiselect option.
+   */
+  value: string;
+  /**
+   * The label of the multiselect option.
+   */
+  label: string;
+  /**
+   * The action to perform when the tool is selected.
+   */
+  action?: () => unknown;
+  /**
+   * The custom command to run when the tool is selected.
+   */
+  command?: string;
+};
+
+async function runCommand(command: string, cwd: string) {
+  const [bin, ...args] = command.split(' ');
+  spawn.sync(bin, args, {
+    stdio: 'inherit',
+    cwd,
+  });
+}
+
 export async function create({
   name,
   root,
@@ -179,6 +227,7 @@ export async function create({
   mapESLintTemplate,
   version,
   noteInformation,
+  extraTools,
 }: {
   name: string;
   root: string;
@@ -191,6 +240,10 @@ export async function create({
   ) => ESLintTemplateName | null;
   version?: Record<string, string> | string;
   noteInformation?: string[];
+  /**
+   * Specify additional tools.
+   */
+  extraTools?: ExtraTool[];
 }) {
   console.log('');
   logger.greet(`◆  Create ${upperFirst(name)} Project`);
@@ -251,7 +304,7 @@ export async function create({
   }
 
   const templateName = await getTemplateName(argv);
-  const tools = await getTools(argv);
+  const tools = await getTools(argv, extraTools);
 
   const srcFolder = path.join(root, `template-${templateName}`);
   const commonFolder = path.join(root, 'template-common');
@@ -280,6 +333,21 @@ export async function create({
   const agentsMdSearchDirs = [commonFolder, srcFolder];
 
   for (const tool of tools) {
+    // Handle extra tools first
+    if (extraTools) {
+      const matchedTool = extraTools.find(
+        (extraTool) => extraTool.value === tool,
+      );
+      if (matchedTool?.action) {
+        await matchedTool.action();
+      }
+      if (matchedTool?.command) {
+        await runCommand(matchedTool.command, distFolder);
+      }
+      continue;
+    }
+
+    // Handle built-in tools
     const toolFolder = path.join(packageRoot, `template-${tool}`);
 
     if (tool === 'eslint') {
