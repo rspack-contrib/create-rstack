@@ -2,11 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { assert, beforeEach, expect, test } from '@rstest/core';
-import { create } from '../dist/index.js';
+import { create } from '../src';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const testDir = path.join(__dirname, 'temp');
 const fixturesDir = path.join(__dirname, 'fixtures', 'agents-md');
+const testDir = path.join(fixturesDir, 'test-temp-output');
 
 beforeEach(() => {
   // Clean up test directory before each test
@@ -15,13 +15,8 @@ beforeEach(() => {
   }
   fs.mkdirSync(testDir, { recursive: true });
 
-  // Store original argv
-  const originalArgv = process.argv;
-
   // Return cleanup function
   return () => {
-    // Restore original argv and clean up
-    process.argv = originalArgv;
     if (fs.existsSync(testDir)) {
       fs.rmSync(testDir, { recursive: true });
     }
@@ -30,13 +25,13 @@ beforeEach(() => {
 
 test('should generate AGENTS.md with no tools selected', async () => {
   const projectDir = path.join(testDir, 'no-tools');
-  process.argv = ['node', 'test', '--dir', projectDir, '--template', 'vanilla'];
 
   await create({
     name: 'test',
     root: fixturesDir,
     templates: ['vanilla'],
     getTemplateName: async () => 'vanilla',
+    argv: ['node', 'test', '--dir', projectDir, '--template', 'vanilla'],
   });
 
   const agentsPath = path.join(projectDir, 'AGENTS.md');
@@ -75,22 +70,22 @@ test('should generate AGENTS.md with no tools selected', async () => {
 
 test('should generate AGENTS.md with single tool selected', async () => {
   const projectDir = path.join(testDir, 'single-tool');
-  process.argv = [
-    'node',
-    'test',
-    '--dir',
-    projectDir,
-    '--template',
-    'vanilla',
-    '--tools',
-    'biome',
-  ];
 
   await create({
     name: 'test',
     root: fixturesDir,
     templates: ['vanilla'],
     getTemplateName: async () => 'vanilla',
+    argv: [
+      'node',
+      'test',
+      '--dir',
+      projectDir,
+      '--template',
+      'vanilla',
+      '--tools',
+      'biome',
+    ],
   });
 
   const agentsPath = path.join(projectDir, 'AGENTS.md');
@@ -134,16 +129,6 @@ test('should generate AGENTS.md with single tool selected', async () => {
 
 test('should generate AGENTS.md with eslint tool and template mapping', async () => {
   const projectDir = path.join(testDir, 'eslint-tool');
-  process.argv = [
-    'node',
-    'test',
-    '--dir',
-    projectDir,
-    '--template',
-    'vanilla',
-    '--tools',
-    'eslint',
-  ];
 
   await create({
     name: 'test',
@@ -154,6 +139,16 @@ test('should generate AGENTS.md with eslint tool and template mapping', async ()
       if (templateName === 'vanilla') return 'vanilla-ts';
       return null;
     },
+    argv: [
+      'node',
+      'test',
+      '--dir',
+      projectDir,
+      '--template',
+      'vanilla',
+      '--tools',
+      'eslint',
+    ],
   });
 
   const agentsPath = path.join(projectDir, 'AGENTS.md');
@@ -196,13 +191,13 @@ test('should generate AGENTS.md with eslint tool and template mapping', async ()
 
 test('should merge top-level sections from AGENTS.md files', async () => {
   const projectDir = path.join(testDir, 'h1-support');
-  process.argv = ['node', 'test', '--dir', projectDir, '--template', 'vanilla'];
 
   await create({
     name: 'test',
     root: fixturesDir,
     templates: ['vanilla'],
     getTemplateName: async () => 'vanilla',
+    argv: ['node', 'test', '--dir', projectDir, '--template', 'vanilla'],
   });
 
   const agentsPath = path.join(projectDir, 'AGENTS.md');
