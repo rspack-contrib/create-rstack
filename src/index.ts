@@ -174,8 +174,8 @@ const readJSON = async (path: string) =>
 const readPackageJson = async (filePath: string) =>
   readJSON(path.join(filePath, 'package.json'));
 
-const parseArgv = () => {
-  const argv = minimist<Argv>(process.argv.slice(2), {
+const parseArgv = (processArgv: string[]) => {
+  const argv = minimist<Argv>(processArgv.slice(2), {
     alias: { h: 'help', d: 'dir', t: 'template' },
   });
 
@@ -210,7 +210,7 @@ type ExtraTool = {
   command?: string;
 };
 
-async function runCommand(command: string, cwd: string) {
+function runCommand(command: string, cwd: string) {
   const [bin, ...args] = command.split(' ');
   spawn.sync(bin, args, {
     stdio: 'inherit',
@@ -228,6 +228,7 @@ export async function create({
   version,
   noteInformation,
   extraTools,
+  argv: processArgv = process.argv,
 }: {
   name: string;
   root: string;
@@ -248,11 +249,15 @@ export async function create({
    * Specify additional tools.
    */
   extraTools?: ExtraTool[];
+  /**
+   * For test purpose, override the default argv (process.argv).
+   */
+  argv?: string[];
 }) {
   console.log('');
   logger.greet(`◆  Create ${upperFirst(name)} Project`);
 
-  const argv = parseArgv();
+  const argv = parseArgv(processArgv);
 
   if (argv.help) {
     logHelpMessage(name, templates);
@@ -346,7 +351,7 @@ export async function create({
         await matchedTool.action();
       }
       if (matchedTool?.command) {
-        await runCommand(matchedTool.command, distFolder);
+        runCommand(matchedTool.command, distFolder);
       }
       continue;
     }

@@ -1,4 +1,4 @@
-import { assert, test } from '@rstest/core';
+import { expect, test } from '@rstest/core';
 import {
   checkCancel,
   create,
@@ -8,9 +8,9 @@ import {
 } from '../dist/index.js';
 
 test('should export public APIs', () => {
-  assert.deepStrictEqual(typeof checkCancel, 'function');
-  assert.deepStrictEqual(typeof create, 'function');
-  assert.deepStrictEqual(typeof multiselect, 'function');
-  assert.deepStrictEqual(typeof select, 'function');
-  assert.deepStrictEqual(typeof text, 'function');
+  expect(typeof checkCancel).toBe('function');
+  expect(typeof create).toBe('function');
+  expect(typeof multiselect).toBe('function');
+  expect(typeof select).toBe('function');
+  expect(typeof text).toBe('function');
 });

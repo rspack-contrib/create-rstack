@@ -3,11 +3,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { beforeEach, expect, test } from '@rstest/core';
 import fse from 'fs-extra';
-import { create } from '../dist/index.js';
+import { create } from '../src';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const testDir = path.join(__dirname, 'temp');
 const fixturesDir = path.join(__dirname, 'fixtures', 'basic');
+const testDir = path.join(fixturesDir, 'test-temp-output');
 
 beforeEach(() => {
   if (fs.existsSync(testDir)) {
@@ -15,10 +15,7 @@ beforeEach(() => {
   }
   fs.mkdirSync(testDir, { recursive: true });
 
-  const originalArgv = process.argv;
-
   return () => {
-    process.argv = originalArgv;
     if (fs.existsSync(testDir)) {
       fs.rmSync(testDir, { recursive: true });
     }
@@ -28,17 +25,6 @@ beforeEach(() => {
 test('should run extra tool action', async () => {
   const projectDir = path.join(testDir, 'extra-tool-action');
   let actionCalled = false;
-
-  process.argv = [
-    'node',
-    'test',
-    '--dir',
-    projectDir,
-    '--template',
-    'vanilla',
-    '--tools',
-    'custom-action',
-  ];
 
   await create({
     name: 'test',
@@ -54,6 +40,16 @@ test('should run extra tool action', async () => {
         },
       },
     ],
+    argv: [
+      'node',
+      'test',
+      '--dir',
+      projectDir,
+      '--template',
+      'vanilla',
+      '--tools',
+      'custom-action',
+    ],
   });
 
   expect(actionCalled).toBe(true);
@@ -61,20 +57,10 @@ test('should run extra tool action', async () => {
 
 test('should run extra tool command', async () => {
   const projectDir = path.join(testDir, 'extra-tool-command');
-  const touchedFile = path.join(projectDir, 'touched-by-command.txt');
+  const testFile = path.join(__dirname, 'node_modules', 'test.txt');
 
-  await fse.remove(touchedFile);
-
-  process.argv = [
-    'node',
-    'test',
-    '--dir',
-    projectDir,
-    '--template',
-    'vanilla',
-    '--tools',
-    'custom-command',
-  ];
+  await fse.outputFile(testFile, '');
+  expect(fs.existsSync(testFile)).toBe(true);
 
   await create({
     name: 'test',
@@ -85,10 +71,20 @@ test('should run extra tool command', async () => {
       {
         value: 'custom-command',
         label: 'Custom Command',
-        command: 'touch touched-by-command.txt',
+        command: `npx rimraf ${testFile}`,
       },
+    ],
+    argv: [
+      'node',
+      'test',
+      '--dir',
+      projectDir,
+      '--template',
+      'vanilla',
+      '--tools',
+      'custom-command',
     ],
   });
 
-  expect(fs.existsSync(touchedFile)).toBe(true);
+  expect(fs.existsSync(testFile)).toBe(false);
 });
