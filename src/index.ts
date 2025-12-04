@@ -236,7 +236,7 @@ export async function create({
   getTemplateName: (argv: Argv) => Promise<string>;
   /**
    * Map the template name to the ESLint template name.
-   * @default () => 'vanilla-ts'
+   * If not provided, defaults to 'vanilla-ts' for all templates.
    */
   mapESLintTemplate?: (
     templateName: string,
