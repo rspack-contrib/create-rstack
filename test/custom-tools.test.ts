@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { assert, beforeEach, test } from '@rstest/core';
+import { beforeEach, expect, test } from '@rstest/core';
 import fse from 'fs-extra';
 import { create } from '../dist/index.js';
 
@@ -45,7 +45,6 @@ test('should run extra tool action', async () => {
     root: fixturesDir,
     templates: ['vanilla'],
     getTemplateName: async () => 'vanilla',
-    mapESLintTemplate: () => null,
     extraTools: [
       {
         value: 'custom-action',
@@ -57,7 +56,7 @@ test('should run extra tool action', async () => {
     ],
   });
 
-  assert.strictEqual(actionCalled, true);
+  expect(actionCalled).toBe(true);
 });
 
 test('should run extra tool command', async () => {
@@ -82,7 +81,6 @@ test('should run extra tool command', async () => {
     root: fixturesDir,
     templates: ['vanilla'],
     getTemplateName: async () => 'vanilla',
-    mapESLintTemplate: () => null,
     extraTools: [
       {
         value: 'custom-command',
@@ -92,5 +90,5 @@ test('should run extra tool command', async () => {
     ],
   });
 
-  assert.strictEqual(fs.existsSync(touchedFile), true);
+  expect(fs.existsSync(touchedFile)).toBe(true);
 });

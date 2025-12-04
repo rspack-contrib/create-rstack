@@ -37,7 +37,6 @@ test('should generate AGENTS.md with no tools selected', async () => {
     root: fixturesDir,
     templates: ['vanilla'],
     getTemplateName: async () => 'vanilla',
-    mapESLintTemplate: () => null,
   });
 
   const agentsPath = path.join(projectDir, 'AGENTS.md');
@@ -92,7 +91,6 @@ test('should generate AGENTS.md with single tool selected', async () => {
     root: fixturesDir,
     templates: ['vanilla'],
     getTemplateName: async () => 'vanilla',
-    mapESLintTemplate: () => null,
   });
 
   const agentsPath = path.join(projectDir, 'AGENTS.md');
@@ -205,7 +203,6 @@ test('should merge top-level sections from AGENTS.md files', async () => {
     root: fixturesDir,
     templates: ['vanilla'],
     getTemplateName: async () => 'vanilla',
-    mapESLintTemplate: () => null,
   });
 
   const agentsPath = path.join(projectDir, 'AGENTS.md');
