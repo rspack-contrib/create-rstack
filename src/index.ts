@@ -105,7 +105,7 @@ function logHelpMessage(
   extraTools?: ExtraTool[],
 ) {
   const extraToolNames = extraTools?.map((tool) => tool.value) ?? [];
-  const toolsList = ['biome', 'eslint', 'prettier', ...extraToolNames].join(
+  const toolsList = [...BUILTIN_TOOLS, ...extraToolNames].join(
     ', ',
   );
 
