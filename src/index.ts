@@ -99,7 +99,16 @@ export type Argv = {
 
 export const BUILTIN_TOOLS = ['eslint', 'prettier', 'biome'];
 
-function logHelpMessage(name: string, templates: string[]) {
+function logHelpMessage(
+  name: string,
+  templates: string[],
+  extraTools?: ExtraTool[],
+) {
+  const extraToolNames = extraTools?.map((tool) => tool.value) ?? [];
+  const toolsList = ['biome', 'eslint', 'prettier', ...extraToolNames].join(
+    ', ',
+  );
+
   logger.log(`
    Usage: create-${name} [dir] [options]
 
@@ -108,7 +117,7 @@ function logHelpMessage(name: string, templates: string[]) {
      -h, --help            display help for command
      -d, --dir <dir>       create project in specified directory
      -t, --template <tpl>  specify the template to use
-     --tools <tool>        select additional tools (biome, eslint, prettier)
+     --tools <tool>        select additional tools (${toolsList})
      --override            override files in target directory
      --packageName <name>  specify the package name
    
@@ -270,7 +279,7 @@ export async function create({
   const argv = parseArgv(processArgv);
 
   if (argv.help) {
-    logHelpMessage(name, templates);
+    logHelpMessage(name, templates, extraTools);
     return;
   }
 
