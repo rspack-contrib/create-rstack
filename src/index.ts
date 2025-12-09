@@ -74,6 +74,19 @@ function isEmptyDir(path: string) {
   return files.length === 0 || (files.length === 1 && files[0] === '.git');
 }
 
+function parseToolsOption(tools: Argv['tools']) {
+  if (typeof tools === 'undefined') {
+    return null;
+  }
+
+  const toolsArr = Array.isArray(tools) ? tools : [tools];
+
+  return toolsArr
+    .flatMap((tool) => tool.split(','))
+    .map((tool) => tool.trim())
+    .filter(Boolean);
+}
+
 export type Argv = {
   help?: boolean;
   dir?: string;
@@ -110,9 +123,10 @@ async function getTools(
   extraTools?: ExtraTool[],
 ) {
   // Check if tools are specified via CLI options
-  if (tools) {
-    let toolsArr = Array.isArray(tools) ? tools : [tools];
-    toolsArr = toolsArr.filter(
+  const parsedTools = parseToolsOption(tools);
+
+  if (parsedTools !== null) {
+    const toolsArr = parsedTools.filter(
       (tool) =>
         BUILTIN_TOOLS.includes(tool) ||
         extraTools?.some((extraTool) => extraTool.value === tool),
@@ -121,10 +135,6 @@ async function getTools(
   }
   // skip tools selection when using CLI options
   if (dir && template) {
-    return [];
-  }
-  // skip tools selection when tools is empty string
-  if (tools === '') {
     return [];
   }
 
