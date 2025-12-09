@@ -97,7 +97,7 @@ export type Argv = {
   'package-name'?: string;
 };
 
-export const BUILTIN_TOOLS = ['eslint', 'prettier', 'biome'];
+export const BUILTIN_TOOLS = ['biome', 'eslint', 'prettier'];
 
 function logHelpMessage(
   name: string,
