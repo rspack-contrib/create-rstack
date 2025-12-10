@@ -278,7 +278,7 @@ export async function create({
   if (isAgent) {
     console.log('');
     logger.info(
-      'To create a project non-interactively, run: npx -y create-rsbuild <DIR> --template <TEMPLATE>',
+      `To create a project non-interactively, run: npx -y create-${name} <DIR> --template <TEMPLATE>`,
     );
   }
 
