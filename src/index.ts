@@ -10,6 +10,7 @@ import {
   select,
   text,
 } from '@clack/prompts';
+import { determineAgent } from '@vercel/detect-agent';
 import spawn from 'cross-spawn';
 import deepmerge from 'deepmerge';
 import minimist from 'minimist';
@@ -105,9 +106,7 @@ function logHelpMessage(
   extraTools?: ExtraTool[],
 ) {
   const extraToolNames = extraTools?.map((tool) => tool.value) ?? [];
-  const toolsList = [...BUILTIN_TOOLS, ...extraToolNames].join(
-    ', ',
-  );
+  const toolsList = [...BUILTIN_TOOLS, ...extraToolNames].join(', ');
 
   logger.log(`
    Usage: create-${name} [dir] [options]
@@ -273,8 +272,15 @@ export async function create({
    */
   argv?: string[];
 }) {
-  console.log('');
-  logger.greet(`◆  Create ${upperFirst(name)} Project`);
+  logger.greet(`\n◆  Create ${upperFirst(name)} Project`);
+
+  const { isAgent } = await determineAgent();
+  if (isAgent) {
+    console.log('');
+    logger.info(
+      'To create a project non-interactively, run: npx -y create-rsbuild <DIR> --template <TEMPLATE>',
+    );
+  }
 
   const argv = parseArgv(processArgv);
 

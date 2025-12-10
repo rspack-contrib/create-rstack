@@ -35,6 +35,9 @@ importers:
       '@types/node':
         specifier: 24.10.1
         version: 24.10.1
+      '@vercel/detect-agent':
+        specifier: ^1.0.0
+        version: 1.0.0
       cross-spawn:
         specifier: ^7.0.6
         version: 7.0.6
@@ -491,6 +494,10 @@ packages:
 
   '@types/node@24.10.1':
     resolution: {integrity: sha512-GNWcUTRBgIRJD5zj+Tq0fKOJ5XZajIiBroOF0yvj2bSU1WvNdYS/dn9UxwsujGW4JX06dnHyjV2y9rRaybH0iQ==}
+
+  '@vercel/detect-agent@1.0.0':
+    resolution: {integrity: sha512-AIPgNkmtFcDgPCl+xvTT1ga90OL7OTX2RKM4zu0PMpwBthPfN2DpdHy10n3bh8K+CA22GDU0/ncjzprZsrk0sw==}
+    engines: {node: '>=14'}
 
   ajv-draft-04@1.0.0:
     resolution: {integrity: sha512-mv00Te6nmYbRp5DCwclxtt7yV/joXJPGS7nM+97GdxvuttCOfgI3K4U25zboyeX0O+myI8ERluxQe5wljMmVIw==}
@@ -1164,6 +1171,8 @@ snapshots:
   '@types/node@24.10.1':
     dependencies:
       undici-types: 7.16.0
+
+  '@vercel/detect-agent@1.0.0': {}
 
   ajv-draft-04@1.0.0(ajv@8.13.0):
     optionalDependencies:
