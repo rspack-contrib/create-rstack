@@ -35,7 +35,9 @@ test('should run extra tool action', async () => {
       {
         value: 'custom-action',
         label: 'Custom Action',
-        action: () => {
+        action: ({ templateName, distFolder }) => {
+          expect(templateName).toBe('vanilla');
+          expect(distFolder).toBe(projectDir);
           actionCalled = true;
         },
       },
