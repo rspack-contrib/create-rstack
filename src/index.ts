@@ -105,9 +105,7 @@ function logHelpMessage(
   extraTools?: ExtraTool[],
 ) {
   const extraToolNames = extraTools?.map((tool) => tool.value) ?? [];
-  const toolsList = [...BUILTIN_TOOLS, ...extraToolNames].join(
-    ', ',
-  );
+  const toolsList = [...BUILTIN_TOOLS, ...extraToolNames].join(', ');
 
   logger.log(`
    Usage: create-${name} [dir] [options]
@@ -222,7 +220,11 @@ type ExtraTool = {
   /**
    * The action to perform when the tool is selected.
    */
-  action?: () => unknown;
+  action?: (context: {
+    templateName: string;
+    distFolder: string;
+    addAgentsMdSearchDirs: (dir: string) => void;
+  }) => unknown;
   /**
    * The custom command to run when the tool is selected.
    */
@@ -368,7 +370,12 @@ export async function create({
       );
       if (matchedTool) {
         if (matchedTool.action) {
-          await matchedTool.action();
+          await matchedTool.action({
+            templateName,
+            distFolder,
+            addAgentsMdSearchDirs: (dir: string) =>
+              agentsMdSearchDirs.push(dir),
+          });
         }
         if (matchedTool.command) {
           runCommand(matchedTool.command, distFolder);
