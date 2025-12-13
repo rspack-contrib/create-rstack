@@ -232,7 +232,28 @@ type ExtraTool = {
   command?: string;
 };
 
-function runCommand(command: string, cwd: string) {
+function runCommand(command: string, cwd: string, packageManager: string) {
+  // Replace `npm create` with the equivalent command for the detected package manager
+  if (command.startsWith('npm create ')) {
+    const createReplacements: Record<string, string> = {
+      bun: 'bun create ',
+      pnpm: 'pnpm create ',
+      yarn: 'yarn create ',
+      deno: 'deno run -A npm:create-',
+    };
+    const replacement = createReplacements[packageManager];
+    if (replacement) {
+      command = command
+        .replace(/^npm create /, replacement)
+        // other package managers don't need the extra `--`
+        .replace(/ -- --/, ' --');
+    }
+    // Yarn v1 does not support `@latest` tag
+    if (packageManager === 'yarn') {
+      command = command.replace('@latest', '');
+    }
+  }
+
   const [bin, ...args] = command.split(' ');
   spawn.sync(bin, args, {
     stdio: 'inherit',
@@ -386,7 +407,7 @@ export async function create({
           });
         }
         if (matchedTool.command) {
-          runCommand(matchedTool.command, distFolder);
+          runCommand(matchedTool.command, distFolder, packageManager);
         }
         continue;
       }
