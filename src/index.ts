@@ -237,6 +237,7 @@ type ExtraTool = {
   /**
    * Specify where to display this tool.
    * If undefined, the tool will be displayed after built-in tools.
+   */
   order?: 'pre' | 'post';
 };
 
