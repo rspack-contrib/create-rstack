@@ -252,9 +252,9 @@ function runCommand(command: string, cwd: string, packageManager: string) {
     const replacement = createReplacements[packageManager];
     if (replacement) {
       command = command
-        .replace(/^npm create /, replacement)
+        .replace('npm create ', replacement)
         // other package managers don't need the extra `--`
-        .replace(/ -- --/, ' --');
+        .replace(' -- --', ' --');
     }
     // Yarn v1 does not support `@latest` tag
     if (packageManager === 'yarn') {
