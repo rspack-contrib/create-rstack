@@ -147,18 +147,22 @@ async function getTools(
   }
 
   const options = [
-    { value: 'biome', label: 'Biome (linting & formatting)' },
-    { value: 'eslint', label: 'ESLint (linting)' },
-    { value: 'prettier', label: 'Prettier (formatting)' },
+    { value: 'biome', label: 'Biome - linting & formatting' },
+    { value: 'eslint', label: 'ESLint - linting' },
+    { value: 'prettier', label: 'Prettier - formatting' },
   ];
 
   if (extraTools) {
+    const normalize = (tool: ExtraTool) => ({
+      value: tool.value,
+      label: tool.label,
+      hint: tool.command,
+    });
+    options.unshift(
+      ...extraTools.filter((tool) => tool.order === 'pre').map(normalize),
+    );
     options.push(
-      ...extraTools.map((tool) => ({
-        value: tool.value,
-        label: tool.label,
-        hint: tool.command,
-      })),
+      ...extraTools.filter((tool) => tool.order !== 'pre').map(normalize),
     );
   }
 
@@ -230,6 +234,10 @@ type ExtraTool = {
    * The custom command to run when the tool is selected.
    */
   command?: string;
+  /**
+   * Specify the display order
+   */
+  order?: 'pre' | 'post';
 };
 
 function runCommand(command: string, cwd: string, packageManager: string) {
