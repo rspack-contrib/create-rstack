@@ -235,8 +235,8 @@ type ExtraTool = {
    */
   command?: string;
   /**
-   * Specify the display order
-   */
+   * Specify where to display this tool.
+   * If undefined, the tool will be displayed after built-in tools.
   order?: 'pre' | 'post';
 };
 
