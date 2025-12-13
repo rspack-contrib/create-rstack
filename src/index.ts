@@ -147,9 +147,9 @@ async function getTools(
   }
 
   const options = [
-    { value: 'biome', label: 'Add Biome for code linting and formatting' },
-    { value: 'eslint', label: 'Add ESLint for code linting' },
-    { value: 'prettier', label: 'Add Prettier for code formatting' },
+    { value: 'biome', label: 'Biome (linting & formatting)' },
+    { value: 'eslint', label: 'ESLint (linting)' },
+    { value: 'prettier', label: 'Prettier (formatting)' },
   ];
 
   if (extraTools) {
