@@ -105,8 +105,19 @@ function logHelpMessage(
   templates: string[],
   extraTools?: ExtraTool[],
 ) {
-  const extraToolNames = extraTools?.map((tool) => tool.value) ?? [];
-  const toolsList = [...BUILTIN_TOOLS, ...extraToolNames].join(', ');
+  const toolsList = [...BUILTIN_TOOLS];
+  if (extraTools) {
+    for (const tool of extraTools) {
+      if (!tool.value) {
+        continue;
+      }
+      if (tool.order === 'pre') {
+        toolsList.unshift(tool.value);
+      } else {
+        toolsList.push(tool.value);
+      }
+    }
+  }
 
   logger.log(`
    Usage: create-${name} [dir] [options]
@@ -116,13 +127,15 @@ function logHelpMessage(
      -h, --help            display help for command
      -d, --dir <dir>       create project in specified directory
      -t, --template <tpl>  specify the template to use
-     --tools <tool>        select additional tools (${toolsList})
+     --tools <tool>        add additional tools, comma separated
      --override            override files in target directory
      --packageName <name>  specify the package name
    
-   Templates:
-
+   Available templates:
      ${templates.join(', ')}
+
+   Optional tools:
+     ${toolsList.join(', ')}
 `);
 }
 

@@ -28,7 +28,5 @@ test('help message includes extra tools', async () => {
   }
 
   const logOutput = logs.join('\n');
-  expect(logOutput).toContain(
-    '--tools <tool>        select additional tools (biome, eslint, prettier, custom-tool)',
-  );
+  expect(logOutput).toContain('biome, eslint, prettier, custom-tool');
 });
