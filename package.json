@@ -4,7 +4,7 @@
   "description": "Create a new Rstack project",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rspack-contrib/create-rstack"
+    "url": "https://github.com/rstackjs/create-rstack"
   },
   "license": "MIT",
   "type": "module",
