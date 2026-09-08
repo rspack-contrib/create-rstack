@@ -25,12 +25,16 @@ beforeEach(() => {
   };
 });
 
-async function createProject(projectDir: string) {
+async function createProject(
+  projectDir: string,
+  getPackageManager?: Parameters<typeof create>[0]['getPackageManager'],
+) {
   await create({
     name: 'test',
     root: fixturesDir,
     templates: ['vanilla'],
     getTemplateName: async () => 'vanilla',
+    getPackageManager,
     git: false,
     builtinTools: [],
     argv: ['node', 'test', '--dir', projectDir, '--template', 'vanilla'],
@@ -88,6 +92,30 @@ test('should skip pnpm-workspace.yaml for other package managers', async () => {
   rs.stubEnv('npm_config_user_agent', 'npm/11.0.0');
 
   await createProject(projectDir);
+
+  expect(fs.existsSync(path.join(projectDir, 'pnpm-workspace.yaml'))).toBe(
+    false,
+  );
+});
+
+test('should override the detected package manager for a template', async () => {
+  const projectDir = path.join(testDir, 'override');
+  rs.stubEnv('npm_config_user_agent', 'npm/11.0.0');
+
+  await createProject(projectDir, ({ templateName }) =>
+    templateName === 'vanilla' ? 'pnpm' : undefined,
+  );
+
+  expect(fs.existsSync(path.join(projectDir, 'pnpm-workspace.yaml'))).toBe(
+    true,
+  );
+});
+
+test('should keep the detected package manager when returning undefined', async () => {
+  const projectDir = path.join(testDir, 'fallback');
+  rs.stubEnv('npm_config_user_agent', 'npm/11.0.0');
+
+  await createProject(projectDir, () => undefined);
 
   expect(fs.existsSync(path.join(projectDir, 'pnpm-workspace.yaml'))).toBe(
     false,
