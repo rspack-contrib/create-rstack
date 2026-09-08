@@ -463,6 +463,7 @@ type ExtraTool = {
    */
   action?: (context: {
     templateName: string;
+    packageManager: string;
     distFolder: string;
     skipFiles: string[];
     addAgentsMdSearchDirs: (dir: string) => void;
@@ -678,6 +679,7 @@ export async function create({
   templates,
   skipFiles,
   getTemplateName,
+  getPackageManager,
   mapESLintTemplate,
   mapRslintTemplate,
   version,
@@ -694,6 +696,12 @@ export async function create({
   skipFiles?: string[];
   templates: string[];
   getTemplateName: (argv: Argv) => Promise<string>;
+  /**
+   * Specify the package manager for the selected template.
+   * Return undefined to use the package manager detected from the user agent,
+   * falling back to npm when no user agent is available.
+   */
+  getPackageManager?: (context: { templateName: string }) => string | undefined;
   /**
    * Map the template name to the ESLint template name.
    * If not provided, defaults to 'vanilla-ts' for all templates.
@@ -754,14 +762,13 @@ export async function create({
   logger.greet(`\n◆  Create ${upperFirst(name)} Project`);
 
   const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent);
-  const packageManager = pkgInfo ? pkgInfo.name : 'npm';
-  const templateParameters = { packageManager };
+  const detectedPackageManager = pkgInfo ? pkgInfo.name : 'npm';
 
   const { isAgent } = await determineAgent();
   if (isAgent) {
     console.log('');
     logger.info(
-      `To create a project non-interactively, run: ${getAgentCreateCommand(name, packageManager)} <DIR> --template <TEMPLATE>`,
+      `To create a project non-interactively, run: ${getAgentCreateCommand(name, detectedPackageManager)} <DIR> --template <TEMPLATE>`,
     );
   }
 
@@ -813,6 +820,9 @@ export async function create({
   }
 
   const templateName = await getTemplateName(argv);
+  const packageManager =
+    getPackageManager?.({ templateName }) ?? detectedPackageManager;
+  const templateParameters = { packageManager };
 
   const srcFolder = path.join(root, `template-${templateName}`);
 
@@ -932,6 +942,7 @@ export async function create({
         if (matchedTool.action) {
           await matchedTool.action({
             templateName,
+            packageManager,
             distFolder,
             skipFiles: [...localSkipFiles],
             addAgentsMdSearchDirs: (dir: string) =>
