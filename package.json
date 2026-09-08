@@ -31,7 +31,7 @@
     "lint": "rs lint",
     "prepare": "rs hooks",
     "test": "rs test",
-    "bump": "npx bumpp"
+    "bump": "pnpm version -m \"release: v%s\""
   },
   "devDependencies": {
     "@clack/prompts": "^1.7.0",
