@@ -932,6 +932,8 @@ export async function create({
   const packageRoot = path.resolve(__dirname, '..');
   const agentsMdSearchDirs = [commonFolder, srcFolder];
 
+  const builtinToolScripts = new Map<string, string>();
+
   for (const tool of tools) {
     // Handle extra tools first
     if (extraTools) {
@@ -980,6 +982,7 @@ export async function create({
         isMergePackageJson: true,
       });
 
+      keepBuiltinToolScripts(distFolder, subFolder, builtinToolScripts);
       agentsMdSearchDirs.push(toolFolder);
       agentsMdSearchDirs.push(subFolder);
       continue;
@@ -1004,6 +1007,7 @@ export async function create({
         isMergePackageJson: true,
       });
 
+      keepBuiltinToolScripts(distFolder, subFolder, builtinToolScripts);
       agentsMdSearchDirs.push(toolFolder);
       agentsMdSearchDirs.push(subFolder);
       continue;
@@ -1018,6 +1022,7 @@ export async function create({
       isMergePackageJson: true,
     });
 
+    keepBuiltinToolScripts(distFolder, toolFolder, builtinToolScripts);
     agentsMdSearchDirs.push(toolFolder);
 
     if (tool === 'biome') {
@@ -1057,6 +1062,37 @@ function sortObjectKeys(obj: Record<string, unknown>) {
  * @param targetPackage Path to the base package.json file
  * @param extraPackage Path to the extra package.json file to merge
  */
+function keepBuiltinToolScripts(
+  distFolder: string,
+  toolFolder: string,
+  builtinToolScripts: Map<string, string>,
+) {
+  const toolPackage = path.join(toolFolder, 'package.json');
+  const targetPackage = path.join(distFolder, 'package.json');
+  if (!fs.existsSync(toolPackage) || !fs.existsSync(targetPackage)) {
+    return;
+  }
+
+  const toolScripts: Record<string, string> =
+    JSON.parse(fs.readFileSync(toolPackage, 'utf-8')).scripts ?? {};
+  const targetJson = JSON.parse(fs.readFileSync(targetPackage, 'utf-8'));
+  let changed = false;
+
+  for (const name of Object.keys(toolScripts)) {
+    const previous = builtinToolScripts.get(name);
+    const command: string = targetJson.scripts[name];
+    if (previous !== undefined && previous !== command) {
+      targetJson.scripts[name] = `${previous} && ${command}`;
+      changed = true;
+    }
+    builtinToolScripts.set(name, targetJson.scripts[name]);
+  }
+
+  if (changed) {
+    fs.writeFileSync(targetPackage, `${JSON.stringify(targetJson, null, 2)}\n`);
+  }
+}
+
 export function mergePackageJson(targetPackage: string, extraPackage: string) {
   if (!fs.existsSync(targetPackage)) {
     return;
