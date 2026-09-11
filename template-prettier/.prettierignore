@@ -3,6 +3,5 @@ package-lock.json
 pnpm-lock.yaml
 yarn.lock
 
-# Agent skills
-.agents
+# Skills lock
 skills-lock.json

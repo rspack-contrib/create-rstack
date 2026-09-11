@@ -14,7 +14,7 @@ beforeEach(() => {
   return () => fs.rmSync(testDir, { recursive: true, force: true });
 });
 
-test('should keep Prettier and Biome away from installed skills', async () => {
+test('should keep Prettier and Biome away from skills-lock.json', async () => {
   const projectDir = path.join(testDir, 'formatters');
 
   await create({
@@ -38,15 +38,10 @@ test('should keep Prettier and Biome away from installed skills', async () => {
     path.join(projectDir, '.prettierignore'),
     'utf-8',
   );
-  expect(prettierIgnore).toContain('.agents');
   expect(prettierIgnore).toContain('skills-lock.json');
 
   const biomeConfig = JSON.parse(
     fs.readFileSync(path.join(projectDir, 'biome.json'), 'utf-8'),
   );
-  expect(biomeConfig.files.includes).toEqual([
-    '**',
-    '!**/.agents',
-    '!**/skills-lock.json',
-  ]);
+  expect(biomeConfig.files.includes).toEqual(['**', '!**/skills-lock.json']);
 });
