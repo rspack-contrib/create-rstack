@@ -118,7 +118,7 @@ test('should generate AGENTS.md with single tool selected', async () => {
 
     ### Biome
 
-    - Run \`pnpm run lint\` to lint your code
+    - Run \`pnpm run check\` to lint your code
     - Run \`pnpm run format\` to format your code
 
     ## Template Info
@@ -127,6 +127,67 @@ test('should generate AGENTS.md with single tool selected', async () => {
 
     - This is vanilla template specific content
     - Only available in vanilla template
+    "
+  `);
+});
+
+test('should generate AGENTS.md with rslint tool selected', async () => {
+  const projectDir = path.join(testDir, 'rslint-tool');
+
+  await create({
+    name: 'test',
+    root: fixturesDir,
+    templates: ['vanilla'],
+    getTemplateName: async () => 'vanilla',
+    argv: [
+      'node',
+      'test',
+      '--dir',
+      projectDir,
+      '--template',
+      'vanilla',
+      '--tools',
+      'rslint',
+    ],
+  });
+
+  const content = fs.readFileSync(path.join(projectDir, 'AGENTS.md'), 'utf-8');
+  expect(content).toMatchInlineSnapshot(`
+    "# Project Overview
+
+    This section provides common guidance for all templates.
+
+    ## Development
+
+    ### Common Development
+
+    - Common development instructions
+    - Available in all templates
+
+    ## Tools
+
+    ### Common Tools
+
+    - Tools that apply to all templates
+
+    ### Rstest
+
+    - Run \`pnpm run test\` to test your code
+
+    ### Rslint
+
+    - Run \`pnpm run lint\` to lint your code
+
+    ## Template Info
+
+    ### Vanilla Template
+
+    - This is vanilla template specific content
+    - Only available in vanilla template
+
+    ## Docs
+
+    - Rslint: https://rslint.rs/llms.txt
     "
   `);
 });
