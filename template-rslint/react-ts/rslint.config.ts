@@ -1,9 +1,9 @@
 import {
   defineConfig,
   js,
-  ts,
-  reactPlugin,
   reactHooksPlugin,
+  reactPlugin,
+  ts,
 } from '@rslint/core';
 
 export default defineConfig([
